@@ -97,6 +97,7 @@ PS:后面不用加github\_blog的，直接像以上配置就可以了
 
 保存退出
 >$ npm install hexo-deployer-git --save
+
 # 进行本地到github的部署
 >$ hexo clean
 >$ hexo g (生成相关文件==hexo generate)
