@@ -63,7 +63,9 @@ tags: [hexo,github]
 >$ git config --global user.eamil "1226956765@qq.com"
 
 ## 创建公钥
-输入>ssh-keygen -C '1226956765@qq.com' -t rsa
+输入
+>$ ssh-keygen -C '1226956765@qq.com' -t rsa
+
 这里的C必须大写，之后你可以一直按回车，直到出现一个字符型的RSA标识
 之后会在用户目录 ~/.ssh/ 下建立相应的密钥文件，即 ~/.ssh/id\_rsa.pub
 
@@ -76,3 +78,54 @@ tags: [hexo,github]
 
 # 部署到github
 首先config.yml的配置
+>$ cd github\_blog
+>$ vim \_config.yml
+
+注意！！
+这是一个最大的坑，因为我的站点是建立在blog的目录下的，看到了\_config.yml上的警号url提示，我理解成了放在blog这样的子目录下，就要在url后面加上blog,所以才导致这个坑，自以为填上了
+
+标准的应该是
+> url: http://k-miracle.github.io/
+> root: /
+
+PS:后面不用加github\_blog的，直接像以上配置就可以了
+拉到文件的最底部配置
+>deploy:
+>　　type: git
+>　　repo: git@github.com:k-miracle/k-miracle.github.io.git
+>　　branch: master
+
+保存退出
+>$ npm install hexo-deployer-git --save
+# 进行本地到github的部署
+>$ hexo clean
+>$ hexo g (生成相关文件==hexo generate)
+>$ hexo d (提交到github仓库中)
+
+最后你可以在浏览器中输入k-miracle.github.io就进入了博客
+>$ hexo s
+
+这个命令是用来查看自己本地对博客的设置，他会提供你一个站点　http://localhost:4000/　，你可以复制这个site到浏览器中
+
+# 主题配置
+主题配置
+接下来就是主题的设置了，我的设置是next主题，需要从github上下载，然后配置其相应目录下的\_config.yml文件，具体可以参考我的另一篇文章
+
+附上[hexo的官方使用中文文档](https://hexo.io/zh-cn/docs/)
+
+
+# 发表文章
+>$ hexo new post "用hexo搭建github博客"
+
+会在source/\_posts目录下生成用hexo搭建github博客.md文件
+在.md文件中用markdown语法写完博客之后可以执行
+
+>$ hexo clean
+>$ hexo g
+>$ hexo d
+
+就可以将写完的博客同步到网站上去了
+
+其他博客链接
+推荐他的博客，详细next使用和博客搭建写的很详细：
+[http://www.dusunboy.io/2017/04/01/Hexo-blog-builds-and-uses-the-theme-NexT-tutorial/](http://www.dusunboy.io/2017/04/01/Hexo-blog-builds-and-uses-the-theme-NexT-    tutorial/)
