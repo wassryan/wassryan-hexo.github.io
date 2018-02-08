@@ -1,6 +1,7 @@
 ---
 title: hexo多终端同步
 date: 2017-12-25 16:28:39
+categories: 博客
 tags: [hexo,github]
 
 ---
