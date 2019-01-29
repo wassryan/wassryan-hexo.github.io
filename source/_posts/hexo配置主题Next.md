@@ -1,10 +1,13 @@
 ---
 title: hexo配置主题Next
-date: 2018-02-08 17:15:24
+date: 2017-12-26 17:15:24
 categories: 博客
 tags: [hexo,github]
 
 ---
+
+搭建完博客之后，进行UI美化将博客主题更改为Next主题
+<!--more-->
 
 >这里注意区分两个配置文件：
 >站点配置文件：是你的 hexo 博客目录下面的 \_config.yml 文件。
