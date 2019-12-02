@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+  <!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  
+  <title>Hexo-搭建github博客 - Zhk&#39;s Space</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  
+  <meta name="keywords" content="hexo">
+  
+  
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=1.02">
+  
+  
+    <link rel="alternate" href="/atom.xml " title="Zhk&#39;s Space" type="application/atom+xml">
+  
+
+  <link rel="stylesheet" href="/css/style.css">
+</head></html>
+  <body>
+    <div class="container">
+      <header class="header">
+  <div class="blog-title">
+    <a href="/" class="logo">Zhk&#39;s Space</a>
+    <div class="subtitle">Learning and Fighting!!!</div>
+  </div>
+  <nav class="navbar">
+    <ul class="menu">
+      
+        <li class="menu-item">
+          <a href="/" class="menu-item-link">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives" class="menu-item-link">Archives</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/about" class="menu-item-link">About</a>
+        </li>
+      
+    </ul>
+  </nav>
+</header>
+<article class="post">
+  <div class="post-title">
+    <h1 class="article-title">Hexo-搭建github博客</h1>
+  </div>
+   <div class="post-meta">
+    <span class="post-time">2017-12-24</span>
+  </div>
+  <div class="post-content">
+    <p>使用github，hexo在ubuntu16.04上搭建静态博客<br><a id="more"></a></p>
+<h1 id="下载必要的软件"><a href="#下载必要的软件" class="headerlink" title="下载必要的软件"></a>下载必要的软件</h1><blockquote>
+<p>$ sudo apt-get install nodejs<br>$ sudo apt-get install npm</p>
+</blockquote>
+<p>注意对软件有所更新的话一定要执行下面这两个命令<br>这两个命令用于安装完软件后对软件及数据库的更新，这是第一个坑！！！</p>
+<blockquote>
+<p>$ sudo apt update<br>$ sudo apt upgrade</p>
+</blockquote>
+<p>安装完之后，你可以在命令行输入</p>
+<blockquote>
+<p>$ npm -v</p>
+</blockquote>
+<p>出现版本号时，就说明npm顺利安装，可以进行hexo的安装，这是最简单的一步,直接输入命令</p>
+<blockquote>
+<p>$ sudo npm install -g hexo</p>
+</blockquote>
+<p>只要不出现ERR都是可以接受的<br>到这里，恭喜你已经完成所有必备软件的安装了，算半只脚离坑了</p>
+<h1 id="初始化博客站点"><a href="#初始化博客站点" class="headerlink" title="初始化博客站点"></a>初始化博客站点</h1><p>在ubuntu用户目录下新建一个blog，里面相当于本地的blog及其所有的配置</p>
+<blockquote>
+<p>$ mkdir github_blog (我新建的名字为blog)<br>$ hexo init github_blog (初始化)</p>
+</blockquote>
+<p>出现INFO Start blogging with Hexo!就说明成功了</p>
+<blockquote>
+<p>$ cd blog<br>$ npm install<br>$ hexo -v</p>
+</blockquote>
+<p>出现以下内容就说明成功了</p>
+<blockquote>
+<p>hexo: 3.3.8<br>hexo-cli: 1.0.3<br>os: Linux 4.4.0-92-generic linux x64<br>http_parser: 2.7.0<br>node: 6.11.2<br>v8: 5.1.281.103<br>uv: 1.11.0<br>zlib: 1.2.11<br>ares: 1.10.1-DEV<br>icu: 58.2<br>modules: 48<br>openssl: 1.0.21</p>
+</blockquote>
+<p>接下来就是与github建立链接了，你需要在github上创建自己的轻型静态博客,例如我的k-miracle.github.io</p>
+<h1 id="安装配置github"><a href="#安装配置github" class="headerlink" title="安装配置github"></a>安装配置github</h1><h2 id="安装git"><a href="#安装git" class="headerlink" title="安装git"></a>安装git</h2><blockquote>
+<p>$ sudo apt-get install git</p>
+</blockquote>
+<h2 id="配置github-与本地的关系"><a href="#配置github-与本地的关系" class="headerlink" title="配置github(与本地的关系)"></a>配置github(与本地的关系)</h2><blockquote>
+<p>$ git config –global user.name “k-miracle”<br>$ git config –global user.eamil “<a href="mailto:1226956765@qq.com" target="_blank" rel="noopener">1226956765@qq.com</a>“</p>
+</blockquote>
+<h2 id="创建公钥"><a href="#创建公钥" class="headerlink" title="创建公钥"></a>创建公钥</h2><p>输入</p>
+<blockquote>
+<p>$ ssh-keygen -C <a href="mailto:&#39;1226956765@qq.com" target="_blank" rel="noopener">&#39;1226956765@qq.com</a>‘ -t rsa</p>
+</blockquote>
+<p>这里的C必须大写，之后你可以一直按回车，直到出现一个字符型的RSA标识<br>之后会在用户目录 ~/.ssh/ 下建立相应的密钥文件，即 ~/.ssh/id_rsa.pub</p>
+<h2 id="在github上添加公钥"><a href="#在github上添加公钥" class="headerlink" title="在github上添加公钥"></a>在github上添加公钥</h2><p>  还是在github首页右上角点击头像，选择Settings，然后选择New SSH KEY，把上面一步id_rsa.pub文件的秘钥复制进去就好了。(注意这步复制秘钥最好自己一行行复制，以免出问题)</p>
+<h2 id="创建项目仓库"><a href="#创建项目仓库" class="headerlink" title="创建项目仓库"></a>创建项目仓库</h2><p>  登录Github官网，点击右上角的+，选择New repository。<br>  在页面里输入github账户名.github.io只能这么填，不能改，例如我的是k-miracle.github.io填完后点击Create repository即可。(其余选项默认不用改)</p>
+<h1 id="部署到github"><a href="#部署到github" class="headerlink" title="部署到github"></a>部署到github</h1><p>首先config.yml的配置</p>
+<blockquote>
+<p>$ cd github_blog<br>$ vim _config.yml</p>
+</blockquote>
+<p>注意！！<br>这是一个最大的坑，因为我的站点是建立在blog的目录下的，看到了_config.yml上的警号url提示，我理解成了放在blog这样的子目录下，就要在url后面加上blog,所以才导致这个坑，自以为填上了</p>
+<p>标准的应该是</p>
+<blockquote>
+<p>url: <a href="http://k-miracle.github.io/">http://k-miracle.github.io/</a><br>root: /</p>
+</blockquote>
+<p>PS:后面不用加github_blog的，直接像以上配置就可以了<br>拉到文件的最底部配置</p>
+<blockquote>
+<p>deploy:<br>　　type: git<br>　　repo: <a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a>:k-miracle/k-miracle.github.io.git<br>　　branch: master</p>
+</blockquote>
+<p>保存退出</p>
+<blockquote>
+<p>$ npm install hexo-deployer-git –save</p>
+</blockquote>
+<h1 id="进行本地到github的部署"><a href="#进行本地到github的部署" class="headerlink" title="进行本地到github的部署"></a>进行本地到github的部署</h1><blockquote>
+<p>$ hexo clean<br>$ hexo g (生成相关文件==hexo generate)<br>$ hexo d (提交到github仓库中)</p>
+</blockquote>
+<p>最后你可以在浏览器中输入k-miracle.github.io就进入了博客</p>
+<blockquote>
+<p>$ hexo s</p>
+</blockquote>
+<p>这个命令是用来查看自己本地对博客的设置，他会提供你一个站点　<a href="http://localhost:4000/" target="_blank" rel="noopener">http://localhost:4000/</a>　，你可以复制这个site到浏览器中</p>
+<h1 id="主题配置"><a href="#主题配置" class="headerlink" title="主题配置"></a>主题配置</h1><p>主题配置<br>接下来就是主题的设置了，我的设置是next主题，需要从github上下载，然后配置其相应目录下的_config.yml文件，具体可以参考我的另一篇文章</p>
+<p>附上<a href="https://hexo.io/zh-cn/docs/" target="_blank" rel="noopener">hexo的官方使用中文文档</a></p>
+<h1 id="发表文章"><a href="#发表文章" class="headerlink" title="发表文章"></a>发表文章</h1><blockquote>
+<p>$ hexo new post “用hexo搭建github博客”</p>
+</blockquote>
+<p>会在source/_posts目录下生成用hexo搭建github博客.md文件<br>在.md文件中用markdown语法写完博客之后可以执行</p>
+<blockquote>
+<p>$ hexo clean<br>$ hexo g<br>$ hexo d</p>
+</blockquote>
+<p>就可以将写完的博客同步到网站上去了</p>
+<h1 id="新增页面"><a href="#新增页面" class="headerlink" title="新增页面"></a>新增页面</h1><blockquote>
+<p>$ hexo new page “About” # 这样就新增了About页面</p>
+</blockquote>
+<h1 id="遇到的bug"><a href="#遇到的bug" class="headerlink" title="遇到的bug"></a>遇到的bug</h1><p>1、运行hexo提示/usr/bin/env: “node”: 没有那个文件或目录：<br>解决：sudo ln -s /usr/bin/nodejs /usr/bin/node</p>
+<p>其他博客链接<br>推荐他的博客，详细next使用和博客搭建写的很详细：<br><a href="http://www.dusunboy.io/2017/04/01/Hexo-blog-builds-and-uses-the-theme-NexT-tutorial/" target="_blank" rel="noopener">http://www.dusunboy.io/2017/04/01/Hexo-blog-builds-and-uses-the-theme-NexT-tutorial/</a></p>
+
+  </div>
+  <div class="post-footer">
+    
+      <ul class="post-tag-list"><li class="post-tag-list-item"><a class="post-tag-list-link" href="/tags/hexo/">hexo</a></li></ul>
+    
+
+    <a href="#top" class="top">Back to Top</a>
+  </div>
+</article>
+<footer>
+  &copy; 2019
+  <span class="author">
+    Kai Zheng
+  </span>
+</footer>
+    </div>
+  </body>
+</html>

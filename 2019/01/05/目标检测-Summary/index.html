@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  
+  <title>目标检测-Summary - Zhk&#39;s Space</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  
+  <meta name="keywords" content="目标检测">
+  
+  
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=1.02">
+  
+  
+    <link rel="alternate" href="/atom.xml " title="Zhk&#39;s Space" type="application/atom+xml">
+  
+
+  <link rel="stylesheet" href="/css/style.css">
+</head></html>
+  <body>
+    <div class="container">
+      <header class="header">
+  <div class="blog-title">
+    <a href="/" class="logo">Zhk&#39;s Space</a>
+    <div class="subtitle">Learning and Fighting!!!</div>
+  </div>
+  <nav class="navbar">
+    <ul class="menu">
+      
+        <li class="menu-item">
+          <a href="/" class="menu-item-link">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives" class="menu-item-link">Archives</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/about" class="menu-item-link">About</a>
+        </li>
+      
+    </ul>
+  </nav>
+</header>
+<article class="post">
+  <div class="post-title">
+    <h1 class="article-title">目标检测-Summary</h1>
+  </div>
+   <div class="post-meta">
+    <span class="post-time">2019-01-05</span>
+  </div>
+  <div class="post-content">
+    <p>这篇Summary是对我本科三年级在目标检测中所做所看的内容的总结。同时也包括了对我自己在本科四年级发表的论文的概要。</p>
+<a id="more"></a>
+<h1 id="各种Detector"><a href="#各种Detector" class="headerlink" title="各种Detector"></a>各种Detector</h1><p>这项工作主要是广泛阅读大量的论文，包括目标检测、图像分类、图像分割领域的前沿顶会论文。因为是2017年上半年做的内容，所以那时候搜集到的论文主要有Mask R-CNN,Light-head R-CNN,R-FCN,Faster R-CNN,SENet,LocNet,Defromable Convolution Network,FPN等.</p>
+<h1 id="看法"><a href="#看法" class="headerlink" title="看法"></a>看法</h1><p>当初看了每篇论文，所有细节都仔细看到了，也基本全部复现了一遍，但是在跑代码的过程中还是发现了不少问题，例如有些开源代码的Loss难以收敛的问题，最后选择了一个比较基本没有问题的框架，也就是在mx-rcnn的开源代码上进行自己的实验。之所以选择mxnet作为框架，是因为mxnet对于显存的优化控制比较优良，身边好多用tensorflow或者caffe的，对于tensorflow的显存占比我是没法继续在上面进行改代码的，对于caffe，因为是老一代的深度学习工具了，我也用过，但是对于代码的优化，可读性和可重构性不比mxnet，相比之下，mxnet对于我来说更容易上手，也更容易部署。(在做实验的后半段过程中，GluonCV和GluonNLP的出现，也坚定了我对mxnet框架的喜爱，但是我并没有使用Gluon)</p>
+<p>1、Faster R-CNN<br>这个是目标检测的鼻祖了，当初一两年前实验室的师兄师姐都用Faster R-CNN的caffe版本在小的服务器上跑了一遍。而mxnet版本对Faster RCNN进行了一些细节上的优化，所以精度比原论文的更高一些</p>
+<p>2、R-FCN<br>这个论文的关键是引入了PSRoipooling，这也是该论文相比其他论文提升的重要创新点，它通过将一个区域分成k*k个小grid，以及对每个channel的通道进行选择性提取，最终使得学到的weight和bias能够学会方位的信息</p>
+<p>3、Mask RCNN<br>这篇论文也是给我启发最大的一篇论文，它通过把loss改造成多task的loss，从而使得分割和检测相互协同，同时引入的RoiAlign对像素进行更细致的量化，从而实现了在精度上的一大跃进。</p>
+<p>4、SENet<br>这篇是ImageNet 2017 Image Classification任务的冠军，思路很清晰巧妙，认为每个channel的feature map的侧重点应该是不同的，所以要赋予不同的权重，所以引入了Squeeze和Excitation操作，来显式地建模通道之间的相互依赖关系，为了不引入一个新的空间维度来进行特征通道间的融合，而是采用了一种全新的<strong>特征重标定</strong>策略。具体来说，就是通过神经网络自学习的方式，来自动获取每个特征通道的重程度，然后依照这个重要程度去提升有用的特征并抑制对当前任务用处不大的特征。</p>
+<p>5、Deformable ConvNet<br>该篇论文是从卷积核的基础结构入手的，比如卷积核采样时位置是固定不变的，pool采用时也是固定的，这些的固定结构导致卷积核不能处理几何的变换，或者换句话说，对目标的空间结构变化适应能力不够。而Deformable ConvNet这篇论文引入的Deformable模块通过神经网络另学习的一个offset参数，是给予正规grid的一个偏移量。从实验效果图来看，这个模块能够让卷积核更准确地去关注目标位置，而不是把注意力停留在空白无效的位置上。</p>
+<h1 id="idea"><a href="#idea" class="headerlink" title="idea"></a>idea</h1><p>总结了一些思路之后，我开始进行实验。<br>首先对于RFCN来看，它引入的是局部特征的信息，这对于以往的目标检测器来说是极其重要并且缺少的一部分。而对于Mask RCNN，它提出的让分割和检测两个任务协同进行的操作，对于现在的检测器也提供了另一种思路。而Deformable ConvNet正好能够与RFCN相互结合，让检测器对局部空间结构更敏感。同时，一个Dual Branch结构，能够同多任务loss一样，使得检测的效果进一步提升。</p>
+<h1 id="实验"><a href="#实验" class="headerlink" title="实验"></a>实验</h1><p>有了idea之后，我花了2-3个月的时间在服务器上实验验证修改自己的代码，多重比较自己的结果，在每次得出的数据后都反思思考，一步步提升。</p>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>跑实验确实挺辛苦，因为坑比较多，有时候跑出来的结果不如想象中的那样好，就要不停的去找bug。不过最后，还是得到了令人比较满意的结果。这一路来真的挺曲折，从当初看论文开始是冬天，还下着雪，最后得出结果，离开实验室时，已经是夏天了，一晃6个月，时间总是会见证一切的。最后要感谢在这条路上，帮助过我的师兄师姐，还有老师，感谢有你们！</p>
+
+  </div>
+  <div class="post-footer">
+    
+      <ul class="post-tag-list"><li class="post-tag-list-item"><a class="post-tag-list-link" href="/tags/目标检测/">目标检测</a></li></ul>
+    
+
+    <a href="#top" class="top">Back to Top</a>
+  </div>
+</article>
+<footer>
+  &copy; 2019
+  <span class="author">
+    Kai Zheng
+  </span>
+</footer>
+    </div>
+  </body>
+</html>

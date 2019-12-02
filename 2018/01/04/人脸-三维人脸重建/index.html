@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  
+  <title>人脸-三维人脸重建 - Zhk&#39;s Space</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  
+  <meta name="keywords" content="三维人脸重建">
+  
+  
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=1.02">
+  
+  
+    <link rel="alternate" href="/atom.xml " title="Zhk&#39;s Space" type="application/atom+xml">
+  
+
+  <link rel="stylesheet" href="/css/style.css">
+</head></html>
+  <body>
+    <div class="container">
+      <header class="header">
+  <div class="blog-title">
+    <a href="/" class="logo">Zhk&#39;s Space</a>
+    <div class="subtitle">Learning and Fighting!!!</div>
+  </div>
+  <nav class="navbar">
+    <ul class="menu">
+      
+        <li class="menu-item">
+          <a href="/" class="menu-item-link">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives" class="menu-item-link">Archives</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/about" class="menu-item-link">About</a>
+        </li>
+      
+    </ul>
+  </nav>
+</header>
+<article class="post">
+  <div class="post-title">
+    <h1 class="article-title">人脸-三维人脸重建</h1>
+  </div>
+   <div class="post-meta">
+    <span class="post-time">2018-01-04</span>
+  </div>
+  <div class="post-content">
+    <p>本科大三年级上在实验室导师分配做的一个小项目，可惜做到一半因为一些客观原因中止了，做的时候挺有意思的，主要是里面的思想是很novelty的，也挺有意思的，所以就试了下效果，看了些相关的三维人脸重建的论文。<br><a id="more"></a></p>
+<h1 id="Regressing-Robust-and-Discriminative-3D-Morphable-Models-with-a-very-Deep-Neural-Network"><a href="#Regressing-Robust-and-Discriminative-3D-Morphable-Models-with-a-very-Deep-Neural-Network" class="headerlink" title="Regressing Robust and Discriminative 3D Morphable Models with a very Deep Neural Network"></a>Regressing Robust and Discriminative 3D Morphable Models with a very Deep Neural Network</h1><p>项目是开源的：<a href="https://github.com/anhttran/3dmm_cnn" target="_blank" rel="noopener">Github地址</a><br>最初导师让我看这篇文章是想让我重新复现这篇论文，当我看完论文，搭好环境之后，发现缺少一个重要的步骤，也就是数据集的问题，他需要的用于训练的三维人脸数据是美国国防部的数据，对于我们，则很难要到，所以这个项目最后只能无果而终了。</p>
+<p>但是我还是把中间学到的一些东西记录下来。</p>
+<h1 id="论文理解"><a href="#论文理解" class="headerlink" title="论文理解"></a>论文理解</h1><h2 id="关键点："><a href="#关键点：" class="headerlink" title="关键点："></a>关键点：</h2><p>　　1、我们的克服了训练数据的缺少，通过提出一种生成巨量带标签的数据。<br>　　2、本文是一个回归问题，输入的图像和输出的3dmm shape参数都是高维的。解决这类问题需要深层的网络和巨量的训练数据。<br>　　3、我们使用Automated 3D face reconstruction from multiple images using quality measures(2016)(这是一种多视图3dmm的估计方法)生成3d face shape估计来作为训练数据代替ground truth估计。</p>
+<h2 id="生成训练数据："><a href="#生成训练数据：" class="headerlink" title="生成训练数据："></a>生成训练数据：</h2><p>　　我们使用一个简单高效的多图像3DMM估计方法，loosely基于Automated 3D face reconstruc-tion from multiple images using quality measures(2016)我们将他运行在不受约束的脸部数据库CASIA上。这些多图像估计会作为我们3dmm-cnn回归时的ground truth<br>　　多图像3dmm重建首先在500k个单图像(CASIA)上估计3dmm参数，然后相同subject的估计会聚合成单个3dmm对于每个subject。</p>
+<h2 id="3dmm-representation："><a href="#3dmm-representation：" class="headerlink" title="3dmm representation："></a>3dmm representation：</h2><p>　　BFM是一个公开的可获取的最先进的单视图3d人脸重建的模型。我们通过BFM的方法来表示3dmm。将shape和texture分开表示。该论文中，描述BFM使用的alpha,beta系数为99维</p>
+<h2 id="准备训练数据"><a href="#准备训练数据" class="headerlink" title="准备训练数据"></a>准备训练数据</h2><p>　　<strong>单张图片3dmm fitting：（fitting一个3dmm对于每个用于训练的图片）</strong><br>　　我们使用clnf（论文：Holistically constrained local model: Going beyond frontal poses for facial landmark detection）作为我们人脸的关键点检测器，这些关键点作为输入人脸姿态(pose用6个自由度表示,旋转r1,r2,r3,平移t1,t2,t3)的初始估计<strong>（脸部特征点用于在3DMM坐标系中初始化输入人脸的角度）</strong>。估计方法类似于论文12，3dmm fitting然后在shape,texture,pose,illumination,color优化（基于论文8），由于clnf检测器会有定位错误，所以我们的优化也使用了edge-based cost(论文31)来引入稳定性。一旦优化拟合，我们提取shape,texture参数,以及alpha,beta从最后一次迭代作为我们对图像I的估计。这是我们对一张训练图片的参数的估计，用于后面的cnn训练。<br>　　这些方法具体见论文8和论文31….(又要去看论文了…..)</p>
+<p>　　<strong>多图像3dmm fitting(将通过单张图片3dmm fitting得到的3dmm参数估计通过下面论文的方法对同一个subject个体的估计进行加权合并，达到所谓的多图像3dmm fitting)</strong><br>　　我们发现一个简单的多图像3d 人脸shape估计的方法，由最近的一个工作提出，尤其高效：Automated 3D face reconstruction from multiple images using quality measures.<br>　　注意我们不使用该论文的基于d(normals)的rank-list方法，而是使用人脸检测器(CLNF)的置信度作为他的权重。<br>　　我们汇聚了shape和texture 3dmm参数对于同一个subject的N张图片估计,用到人脸检测时的置信度作为权重。经过这个步骤，对于每个CASIA图像都被规划成一个汇聚后的3dmm vector gama(alpha+beta)。</p>
+<h2 id="CNN训练"><a href="#CNN训练" class="headerlink" title="CNN训练"></a>CNN训练</h2><p>　　根据以上准备训练数据的步骤，现在训练集中的每个subject都有一些图片和一个pooled后的3dmm参数，现在我们使用这些数据去学习一个函数，理想情况是，同一个subject的不同图片应该回归出相同的一个pooled的3dmm。<br>　　<strong>CNN回归</strong><br>　　deep ResNet-101(Deep residual learning for image recognition搜 github有原文件)的最后一个全连接层被修改为198维的特征，然后这个网络被用来在CASIA图片数据集上fine-tuned，并将从CASIA得到的3dmm估计作为标签。同一个subject的不同图片使用相同的目标3dmm shape。<br>　　发现使用Euclidean loss(L2)作为损失函数会使生成的人脸缺少细节。我们引入了asymmetric Euclidean loss。<br>　　注意：该论文只是去评价他们的3dmm模型的鲁棒性和辨别性高于其他方法。而不是专攻于人脸识别。</p>
+<h2 id="具体的实现细节"><a href="#具体的实现细节" class="headerlink" title="具体的实现细节"></a>具体的实现细节</h2><p>　　因为距离做这个项目已经很久了，细节方面已经有些遗忘了，而且最近比较忙于另一个方向的事，所以暂时写到这了，等以后空下来再补上吧！</p>
+
+  </div>
+  <div class="post-footer">
+    
+      <ul class="post-tag-list"><li class="post-tag-list-item"><a class="post-tag-list-link" href="/tags/三维人脸重建/">三维人脸重建</a></li></ul>
+    
+
+    <a href="#top" class="top">Back to Top</a>
+  </div>
+</article>
+<footer>
+  &copy; 2019
+  <span class="author">
+    Kai Zheng
+  </span>
+</footer>
+    </div>
+  </body>
+</html>

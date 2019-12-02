@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+  <!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  
+  <title>Hexo-多终端同步 - Zhk&#39;s Space</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  
+  <meta name="keywords" content="hexo">
+  
+  
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=1.02">
+  
+  
+    <link rel="alternate" href="/atom.xml " title="Zhk&#39;s Space" type="application/atom+xml">
+  
+
+  <link rel="stylesheet" href="/css/style.css">
+</head></html>
+  <body>
+    <div class="container">
+      <header class="header">
+  <div class="blog-title">
+    <a href="/" class="logo">Zhk&#39;s Space</a>
+    <div class="subtitle">Learning and Fighting!!!</div>
+  </div>
+  <nav class="navbar">
+    <ul class="menu">
+      
+        <li class="menu-item">
+          <a href="/" class="menu-item-link">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives" class="menu-item-link">Archives</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/about" class="menu-item-link">About</a>
+        </li>
+      
+    </ul>
+  </nav>
+</header>
+<article class="post">
+  <div class="post-title">
+    <h1 class="article-title">Hexo-多终端同步</h1>
+  </div>
+   <div class="post-meta">
+    <span class="post-time">2017-12-25</span>
+  </div>
+  <div class="post-content">
+    <p>想在不同的终端进行github+Hexo的博客发布更新<br>主体的思路是将博文内容相关文件放在Github项目中master中，将Hexo配置写博客用的相关文件放在Github项目的hexo分支上<br><a id="more"></a></p>
+<p>由于要在不同电脑上同步hexo博客，注意github上托管的博客是master和hexo分支的</p>
+<ul>
+<li>hexo分支：用来保存hexo的环境变量配置，包括theme之类的</li>
+<li>master分支：用来保存生成的静态文件，即博客</li>
+</ul>
+<h1 id="更新环境主题"><a href="#更新环境主题" class="headerlink" title="更新环境主题"></a>更新环境主题</h1><p>如果在本地更新了hexo环境的话，需要切换到hexo分支<br><code>git add .</code><br><code>git commit -m &quot;update theme&quot;</code><br><code>git push origin hexo</code><br>这样就把环境推送到了hexo分支</p>
+<h1 id="更新博客"><a href="#更新博客" class="headerlink" title="更新博客"></a>更新博客</h1><p><code>hexo g</code><br><code>hexo d</code><br>这样就把文件推送到了master分支</p>
+<h1 id="同步云端环境到本地"><a href="#同步云端环境到本地" class="headerlink" title="同步云端环境到本地"></a>同步云端环境到本地</h1><p><code>git pull origin hexo</code><br>————–分割线———————-</p>
+<h1 id="本地上传博客工程"><a href="#本地上传博客工程" class="headerlink" title="本地上传博客工程"></a>本地上传博客工程</h1><p>上一博客部署博客到Github以后，我们可以在Github仓库的master分支上看到我们上传的博客文件<br>但是这个博客文件是不包含hexo配置的，所以我们需要新建分支，使用git指令将带hexo配置的Github工程文件上传到新建的分支上</p>
+<h1 id="新建分支hexo"><a href="#新建分支hexo" class="headerlink" title="新建分支hexo"></a>新建分支hexo</h1><p>在github博客项目的Branch处点击输入新的分支hexo，并选择创建该分支</p>
+<h1 id="git初始化"><a href="#git初始化" class="headerlink" title="git初始化"></a>git初始化</h1><p>先进入到本地的博客文件夹下</p>
+<blockquote>
+<p>$ cd github_blog<br>$ git init</p>
+</blockquote>
+<h1 id="添加仓库地址"><a href="#添加仓库地址" class="headerlink" title="添加仓库地址"></a>添加仓库地址</h1><blockquote>
+<p>$ git remote add origin <a href="https://github.com/k-miracle/k-miracle.github.io.git" target="_blank" rel="noopener">https://github.com/k-miracle/k-miracle.github.io.git</a></p>
+</blockquote>
+<h1 id="切换到新建的hexo分支"><a href="#切换到新建的hexo分支" class="headerlink" title="切换到新建的hexo分支"></a>切换到新建的hexo分支</h1><blockquote>
+<p>$ git checkout -b hexo</p>
+</blockquote>
+<h1 id="添加所有文件到git"><a href="#添加所有文件到git" class="headerlink" title="添加所有文件到git"></a>添加所有文件到git</h1><blockquote>
+<p>$ git add .</p>
+</blockquote>
+<h1 id="先把github仓库中的文件pull下来"><a href="#先把github仓库中的文件pull下来" class="headerlink" title="先把github仓库中的文件pull下来"></a>先把github仓库中的文件pull下来</h1><blockquote>
+<p>$ git pull origin hexo </p>
+</blockquote>
+<h1 id="本地仓库全部push到github"><a href="#本地仓库全部push到github" class="headerlink" title="本地仓库全部push到github"></a>本地仓库全部push到github</h1><blockquote>
+<p>$ git commit -m “update 2017/12/25”<br>$ git push origin hexo</p>
+</blockquote>
+<h1 id="另一终端完成clone和push操作"><a href="#另一终端完成clone和push操作" class="headerlink" title="另一终端完成clone和push操作"></a>另一终端完成clone和push操作</h1><p>此时在另一终端更新博客，只需要将Github的hexo分支clone下来，进行初次的相关配置<br>PS:最关键的是，防止原电脑中的博客文件全部消失，消失了也可以同步存储在云端的博客数据，不用再重新搭建博客，这很好！</p>
+<blockquote>
+<p>$ git clone -b hexo <a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a>:k-miracle/k-miracle.github.io.git  //将Github中hexo分支clone到本地<br>$ git clone -b master <a href="mailto:git@github.com" target="_blank" rel="noopener">git@github.com</a>:k-miracle/k-miracle.github.io.git  //将Github中master分支clone到本地<br>$ cd k-miracle.github.io<br>$ npm install    //注意，这里一定要切换到刚刚clone的文件夹内执行，安装必要的所需组件，不用再init<br>$ hexo new post “new blog name”   //新建一个.md文件，并编辑完成自己的博客内容<br>$ git add source  //经测试每次只要更新sorcerer中的文件到Github中即可，因为只是新建了一篇新博客<br>$ git commit -m “提交的信息”<br>$ git push origin hexo  //更新分支<br>$ hexo d -g   //push更新完分支之后将自己写的博客对接到自己搭的博客网站上，同时同步了Github中的master</p>
+</blockquote>
+<h1 id="现在终于同步完两个终端，如何在两个终端更新博客，每次只需要以下６步"><a href="#现在终于同步完两个终端，如何在两个终端更新博客，每次只需要以下６步" class="headerlink" title="现在终于同步完两个终端，如何在两个终端更新博客，每次只需要以下６步"></a>现在终于同步完两个终端，如何在两个终端更新博客，每次只需要以下６步</h1><blockquote>
+<p>$ git pull origin hexo //每次写博客前从云端同步信息<br>$ hexo new post “new blog name”<br>$ git add source //只更新了博客的话，就上传source下的文件即可<br>$ git commit -m “更新的信息”<br>$ git pushh origin hexo<br>$ hexo d -g</p>
+</blockquote>
+
+  </div>
+  <div class="post-footer">
+    
+      <ul class="post-tag-list"><li class="post-tag-list-item"><a class="post-tag-list-link" href="/tags/hexo/">hexo</a></li></ul>
+    
+
+    <a href="#top" class="top">Back to Top</a>
+  </div>
+</article>
+<footer>
+  &copy; 2019
+  <span class="author">
+    Kai Zheng
+  </span>
+</footer>
+    </div>
+  </body>
+</html>
