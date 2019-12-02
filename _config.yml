@@ -3,8 +3,8 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: Alpha-Kai Blog
-subtitle: Computer Vsion!!!
+title: Zhk's Space
+subtitle: Learning and Fighting!!!
 description:
 author: Kai Zheng
 language: zh-Hans
@@ -66,13 +66,13 @@ time_format: HH:mm:ss
 
 # Pagination
 ## Set per_page to 0 to disable pagination
-per_page: 5
+per_page: 15 #5
 pagination_dir: page
 
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: next
+theme: polk
 
 # Deployment
 ## Docs: https://hexo.io/docs/deployment.html
