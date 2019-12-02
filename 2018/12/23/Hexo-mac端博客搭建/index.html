@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+  <!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  
+  <title>Hexo-mac端博客搭建 - Zhk&#39;s Space</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  
+  <meta name="keywords" content="hexo">
+  
+  
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=1.02">
+  
+  
+    <link rel="alternate" href="/atom.xml " title="Zhk&#39;s Space" type="application/atom+xml">
+  
+
+  <link rel="stylesheet" href="/css/style.css">
+</head></html>
+  <body>
+    <div class="container">
+      <header class="header">
+  <div class="blog-title">
+    <a href="/" class="logo">Zhk&#39;s Space</a>
+    <div class="subtitle">Learning and Fighting!!!</div>
+  </div>
+  <nav class="navbar">
+    <ul class="menu">
+      
+        <li class="menu-item">
+          <a href="/" class="menu-item-link">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives" class="menu-item-link">Archives</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/About" class="menu-item-link">About</a>
+        </li>
+      
+    </ul>
+  </nav>
+</header>
+<article class="post">
+  <div class="post-title">
+    <h1 class="article-title">Hexo-mac端博客搭建</h1>
+  </div>
+   <div class="post-meta">
+    <span class="post-time">2018-12-23</span>
+  </div>
+  <div class="post-content">
+    <h1 id="安装必备文件"><a href="#安装必备文件" class="headerlink" title="安装必备文件"></a>安装必备文件</h1><h3 id="本地站点搭建"><a href="#本地站点搭建" class="headerlink" title="本地站点搭建"></a>本地站点搭建</h3><p>1、安装git</p>
+<p>mac osx中自带git不需要安装</p>
+<p>2、安装Node.js</p>
+<p>从官网直接下载按步骤安装即可；</p>
+<p>安装完之后使用以下命令查看版本号</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">node -v</span><br><span class="line">npm -v</span><br></pre></td></tr></table></figure>
+<p>3、安装hexo</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo npm install -g hexo</span><br></pre></td></tr></table></figure>
+<h3 id="在mac上配置github"><a href="#在mac上配置github" class="headerlink" title="在mac上配置github"></a>在mac上配置github</h3><p>1、输入命令(该邮箱是github注册时的账号邮箱)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ssh-keygen -t rsa -C 邮箱地址</span><br></pre></td></tr></table></figure>
+<p>2、复制上一步在本地产生的ssh key，使用vim打开，并复制全部内容，然后登陆github，将密钥复制到Settings/SSH and GPG keys，new一个新的密钥</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">vim ~/.ssh/id_rsa.pub</span><br></pre></td></tr></table></figure>
+<p>3、关联</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git config --global user.name &quot;github用户名&quot;</span><br><span class="line">git config --global user.email &quot;邮箱地址&quot;</span><br></pre></td></tr></table></figure>
+<p>好，至此本地与github关联完成</p>
+<h3 id="同步云端博客到mac本地"><a href="#同步云端博客到mac本地" class="headerlink" title="同步云端博客到mac本地"></a>同步云端博客到mac本地</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">git clone -b hexo git@github.com:k-miracle/k-miracle.github.io.git</span><br><span class="line"></span><br><span class="line">cd k-miracle.github.io</span><br><span class="line">npm install</span><br><span class="line"></span><br><span class="line">hexo new post &quot;mac同步博客&quot;//新建一个md文件，编写博客内容</span><br><span class="line">git add source//每次只要更新sorcerer中的文件到Github中即可，因为只是新建了一篇新博客</span><br><span class="line">git commit -m &quot;提交的信息&quot;</span><br><span class="line">git push origin hexo//更新分支</span><br><span class="line">hexo d -g//push更新完分支之后将自己写的博客对接到自己搭的博客网站上，同时同步了Github中的master</span><br></pre></td></tr></table></figure>
+<h3 id="如果在ubuntu和mac都要写博客时，按照以下6步"><a href="#如果在ubuntu和mac都要写博客时，按照以下6步" class="headerlink" title="如果在ubuntu和mac都要写博客时，按照以下6步"></a>如果在ubuntu和mac都要写博客时，按照以下6步</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">git pull origin hexo //每次写博客前从云端同步信息</span><br><span class="line">hexo new post “new blog name”</span><br><span class="line">git add source //只更新了博客的话，就上传source下的文件即可</span><br><span class="line">git commit -m “更新的信息”</span><br><span class="line">git pushh origin hexo</span><br><span class="line">hexo d -g</span><br></pre></td></tr></table></figure>
+<p>ps：运行git add source时，可能会出现warning: unable to access ‘/Users/kary/.config/git/ignore’: Permission denied，这是因为kary用户没有.config的访问权限</p>
+<p>只需运行以下命令即可更改权限</p>
+<p><code>sudo chown kary .config</code></p>
+
+  </div>
+  <div class="post-footer">
+    
+      <ul class="post-tag-list"><li class="post-tag-list-item"><a class="post-tag-list-link" href="/tags/hexo/">hexo</a></li></ul>
+    
+
+    <a href="#top" class="top">Back to Top</a>
+  </div>
+</article>
+<footer>
+  &copy; 2019
+  <span class="author">
+    Kai Zheng
+  </span>
+</footer>
+    </div>
+  </body>
+</html>
