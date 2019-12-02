@@ -1,8 +1,8 @@
 ---
-title: Summary for Object Detection
+title: 目标检测-Summary
 date: 2019-01-05 10:49:18
 categories: 目标检测
-tags: [计算机视觉，目标检测]
+tags: [目标检测]
 
 ---
 

@@ -1,7 +1,9 @@
 ---
-title: mac端的博客搭建
+title: Hexo-mac端博客搭建
 date: 2019-01-29 15:53:01
-tags:
+categories: Hexo
+tags: [hexo]
+
 ---
 #  安装必备文件
 

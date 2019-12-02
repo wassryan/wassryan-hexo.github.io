@@ -1,8 +1,8 @@
 ---
-title: Mask RCNN
+title: 目标检测-MaskRCNN
 date: 2018-05-05 09:23:56
 categories: 目标检测
-tags: [计算机视觉，目标检测]
+tags: [目标检测]
 
 ---
 

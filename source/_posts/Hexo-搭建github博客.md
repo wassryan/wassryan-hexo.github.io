@@ -1,8 +1,8 @@
 ---
-title: Ubuntu+hexo搭建github博客
+title: Hexo-搭建github博客
 date: 2017-12-24 14:11:46
-categories: 博客
-tags: [hexo,github]
+categories: Hexo
+tags: [hexo]
 
 ---
 
@@ -127,6 +127,9 @@ PS:后面不用加github\_blog的，直接像以上配置就可以了
 >$ hexo d
 
 就可以将写完的博客同步到网站上去了
+
+# 新增页面
+>$ hexo new page "About" # 这样就新增了About页面
 
 # 遇到的bug
 1、运行hexo提示/usr/bin/env: "node": 没有那个文件或目录：

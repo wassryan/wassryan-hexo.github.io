@@ -1,14 +1,20 @@
 ---
-title: hexo配置主题Next
+title: Hexo-配置主题
 date: 2017-12-26 17:15:24
-categories: 博客
-tags: [hexo,github]
+categories: Hexo
+tags: [hexo]
 
 ---
 
-搭建完博客之后，进行UI美化将博客主题更改为Next主题
+搭建完博客之后，进行UI美化将博客主题更改为Next主题(旧)，Polk(新)
 <!--more-->
 
+# 新版
+后续更换成了`polk`主题：地址在[polk](https://github.com/chunqiuyiyu/hexo-theme-polk)
+按照它博客的做法，即能替换
+注意的一点在`_config.yml`中要设置每页展示的博客数，是在`Pagination`字段下，设置`per_page`
+
+# 旧版
 >这里注意区分两个配置文件：
 >站点配置文件：是你的 hexo 博客目录下面的 \_config.yml 文件。
 >主题配置文件：是 themes/next 目录下的 \_config.yml 文件。

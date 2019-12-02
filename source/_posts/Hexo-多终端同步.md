@@ -1,15 +1,31 @@
 ---
-title: hexo多终端同步
+title: Hexo-多终端同步
 date: 2017-12-25 16:28:39
-categories: 博客
-tags: [hexo,github]
+categories: Hexo
+tags: [hexo]
 
 ---
 想在不同的终端进行github+Hexo的博客发布更新
 主体的思路是将博文内容相关文件放在Github项目中master中，将Hexo配置写博客用的相关文件放在Github项目的hexo分支上
-这个是关键，多终端的同步只需要对分支hexo进行操作
 <!--more-->
 
+由于要在不同电脑上同步hexo博客，注意github上托管的博客是master和hexo分支的
+* hexo分支：用来保存hexo的环境变量配置，包括theme之类的
+* master分支：用来保存生成的静态文件，即博客
+
+# 更新环境主题
+如果在本地更新了hexo环境的话，需要切换到hexo分支
+`git add .`
+`git commit -m "update theme"`
+`git push origin hexo`
+这样就把环境推送到了hexo分支
+# 更新博客
+`hexo g`
+`hexo d`
+这样就把文件推送到了master分支
+# 同步云端环境到本地
+`git pull origin hexo`
+--------------分割线----------------------
 # 本地上传博客工程
 上一博客部署博客到Github以后，我们可以在Github仓库的master分支上看到我们上传的博客文件
 但是这个博客文件是不包含hexo配置的，所以我们需要新建分支，使用git指令将带hexo配置的Github工程文件上传到新建的分支上
@@ -42,8 +58,9 @@ tags: [hexo,github]
 此时在另一终端更新博客，只需要将Github的hexo分支clone下来，进行初次的相关配置
 PS:最关键的是，防止原电脑中的博客文件全部消失，消失了也可以同步存储在云端的博客数据，不用再重新搭建博客，这很好！
 >$ git clone -b hexo git@github.com:k-miracle/k-miracle.github.io.git  //将Github中hexo分支clone到本地
+>$ git clone -b master git@github.com:k-miracle/k-miracle.github.io.git  //将Github中master分支clone到本地
 >$ cd k-miracle.github.io
->$ npm install    //注意，这里一定要切换到刚刚clone的文件夹内执行，安装必要的所需组件，不用再ini
+>$ npm install    //注意，这里一定要切换到刚刚clone的文件夹内执行，安装必要的所需组件，不用再init
 >$ hexo new post "new blog name"   //新建一个.md文件，并编辑完成自己的博客内容
 >$ git add source  //经测试每次只要更新sorcerer中的文件到Github中即可，因为只是新建了一篇新博客
 >$ git commit -m "提交的信息"
