@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+  <!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  
+  <title>python-pyqt多线程 - Zhk&#39;s Space</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  
+  <meta name="keywords" content="python">
+  
+  
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=1.02">
+  
+  
+    <link rel="alternate" href="/atom.xml " title="Zhk&#39;s Space" type="application/atom+xml">
+  
+
+  <link rel="stylesheet" href="/css/style.css">
+</head></html>
+  <body>
+    <div class="container">
+      <header class="header">
+  <div class="blog-title">
+    <a href="/" class="logo">Zhk&#39;s Space</a>
+    <div class="subtitle">Learning and Fighting!!!</div>
+  </div>
+  <nav class="navbar">
+    <ul class="menu">
+      
+        <li class="menu-item">
+          <a href="/" class="menu-item-link">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives" class="menu-item-link">Archives</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/About" class="menu-item-link">About</a>
+        </li>
+      
+    </ul>
+  </nav>
+</header>
+<article class="post">
+  <div class="post-title">
+    <h1 class="article-title">python-pyqt多线程</h1>
+  </div>
+   <div class="post-meta">
+    <span class="post-time">2019-02-03</span>
+  </div>
+  <div class="post-content">
+    <p>这篇讲一下项目中用到的QThread多线程，主要是维护了一个pyqt界面，并使用多线程做人脸检测、识别。<br>同时也是在一个人脸识别的系统项目中学习到的对pyqt界面以及pyqt多线程的编程应用，代码开源：<a href="https://github.com/k-miracle/ARC_Face" target="_blank" rel="noopener">https://github.com/k-miracle/ARC_Face</a></p>
+<h1 id="1-QThread"><a href="#1-QThread" class="headerlink" title="1 QThread"></a>1 QThread</h1><p>继承线程类，覆写<code>run()</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">class Thread(QThread):</span><br><span class="line">   def __init__(self):</span><br><span class="line">      super().__init__()</span><br><span class="line">   def run(self):</span><br><span class="line">      # 线程相关代码		</span><br><span class="line">      pass</span><br><span class="line"># 创建一个新的线程</span><br><span class="line">thread = Thread()</span><br><span class="line">thread.start() # 启动线程</span><br></pre></td></tr></table></figure></p>
+<p>start()启动线程，调用run()，当run()退出后线程结束</p>
+<h2 id="1-1-管理线程"><a href="#1-1-管理线程" class="headerlink" title="1.1 管理线程"></a>1.1 管理线程</h2><p>当线程<code>start()</code>或<code>finish()</code>时，<code>QThread</code>会通过信号通知；或者可以使用<code>isFinished()</code>和<code>isRunning()</code>来查询线程状态。<br>使用<code>exit()</code>或<code>quit()</code>来停止线程<br>使用<code>wait()</code>来阻塞线程，直到另一个线程完成【一般监听<code>finish</code>信号，而不是使用<code>wait()</code>】<br>使用<code>sleep()</code>,<code>msleep()</code>,<code>usleep()</code>进行秒，毫秒，微秒的睡眠【一般使用<code>QTimer</code>，而不是使用<code>sleep()</code>】</p>
+<h1 id="2-信号与槽"><a href="#2-信号与槽" class="headerlink" title="2 信号与槽"></a>2 信号与槽</h1><p>pyqt中当事件发生改变时，就会发处信号。信号会触发所有与该事件（信号）相关的函数（槽）。一个信号可以连接多个槽，一个槽可以监听多个信号。<br><strong>注意</strong>：QThread类中常用的信号有<code>start()</code>,<code>finished()</code>，分别表示在run函数运行之前和运行完run之后线程发射的信号。</p>
+<h2 id="2-1-自定义信号与槽"><a href="#2-1-自定义信号与槽" class="headerlink" title="2.1 自定义信号与槽"></a>2.1 自定义信号与槽</h2><ul>
+<li>定义信号</li>
+<li>定义槽</li>
+<li>连接信号与槽</li>
+<li>发射信号<h3 id="2-1-1-定义信号"><a href="#2-1-1-定义信号" class="headerlink" title="2.1.1 定义信号"></a>2.1.1 定义信号</h3>通过<code>类成员</code>变量定义信号对象<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">class MyWidget(QWidget):  </span><br><span class="line">    # 无参数的信号</span><br><span class="line">    Signal_NoParameters = pyqtSignal()     </span><br><span class="line">    # 带一个参数(整数)的信号      </span><br><span class="line">    Signal_OneParameter = pyqtSignal(int)         </span><br><span class="line">    # 带一个参数(整数或者字符串)的重载版本的信号        </span><br><span class="line">    Signal_OneParameter_Overload = pyqtSignal([int],[str])</span><br><span class="line">    # 带两个参数(整数,字符串)的信号      </span><br><span class="line">    Signal_TwoParameters = pyqtSignal(int,str)    </span><br><span class="line">    # 带两个参数(整数,整数)的重载版本的信号      </span><br><span class="line">    Signal_TwoParameters_Overload = pyqtSignal(int,int)</span><br></pre></td></tr></table></figure>
+</li>
+</ul>
+<h3 id="2-1-2-定义槽函数"><a href="#2-1-2-定义槽函数" class="headerlink" title="2.1.2 定义槽函数"></a>2.1.2 定义槽函数</h3><p>定义槽函数，有多个不同的输入参数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">class MyWidget(QWidget):  </span><br><span class="line">    def setValue_NoParameters(self):   </span><br><span class="line">    	&apos;&apos;&apos;无参数的槽函数&apos;&apos;&apos;  </span><br><span class="line">    	pass  </span><br><span class="line">    </span><br><span class="line">    def setValue_OneParameter(self,nIndex):   </span><br><span class="line">    	&apos;&apos;&apos;带一个参数(整数)的槽函数&apos;&apos;&apos;  </span><br><span class="line">    	pass</span><br><span class="line"></span><br><span class="line">    def setValue_OneParameter_String(self,szIndex):   </span><br><span class="line">    	&apos;&apos;&apos;带一个参数(字符串)的槽函数&apos;&apos;&apos;  </span><br><span class="line">	pass </span><br><span class="line">    </span><br><span class="line">    def setValue_TwoParameters(self,x,y):   </span><br><span class="line">    	&apos;&apos;&apos;带两个参数(整数,整数)的槽函数&apos;&apos;&apos;  </span><br><span class="line">	pass  </span><br><span class="line">    </span><br><span class="line">    def setValue_TwoParameters_String(self,x,szY):</span><br><span class="line">    	&apos;&apos;&apos;带两个参数(整数,字符串)槽函数&apos;&apos;&apos; </span><br><span class="line">	pass</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-1-3-连接信号与槽"><a href="#2-1-3-连接信号与槽" class="headerlink" title="2.1.3 连接信号与槽"></a>2.1.3 连接信号与槽</h3><p>通过<code>connect</code>连接:<code>信号.connect(槽)</code><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">app = QApplication(sys.argv)   </span><br><span class="line">widget = MyWidget()   </span><br><span class="line"></span><br><span class="line"># 连接无参数的信号</span><br><span class="line">widget.Signal_NoParameters.connect(self.setValue_NoParameters )                                          </span><br><span class="line"># 连接带一个整数参数的信号</span><br><span class="line">widget.Signal_OneParameter.connect(self.setValue_OneParameter)                                         </span><br><span class="line"># 连接带一个整数参数，经过重载的信号</span><br><span class="line">widget.Signal_OneParameter_Overload[int].connect(self.setValue_OneParameter)                              </span><br><span class="line"># 连接带一个整数参数，经过重载的信号</span><br><span class="line">widget.Signal_OneParameter_Overload[str].connect(self.setValue_OneParameter_String )</span><br><span class="line"></span><br><span class="line"># 连接一个信号，它有两个整数参数</span><br><span class="line">widget.Signal_TwoParameters.connect(self.setValue_TwoParameters )                                        </span><br><span class="line"># 连接带两个参数(整数,整数)的重载版本的信号</span><br><span class="line">widget.Signal_TwoParameters_Overload[int,int].connect(self.setValue_TwoParameters )                      </span><br><span class="line"></span><br><span class="line"># 连接带两个参数(整数,字符串)的重载版本的信号</span><br><span class="line">widget.Signal_TwoParameters_Overload[int,str].connect(self.setValue_TwoParameters_String )              </span><br><span class="line"></span><br><span class="line">widget.show()</span><br></pre></td></tr></table></figure></p>
+<h3 id="2-1-4-发射信号"><a href="#2-1-4-发射信号" class="headerlink" title="2.1.4 发射信号"></a>2.1.4 发射信号</h3><p>在需要发出信号的代码段，执行<code>信号.emit()</code>，即发处信号，<code>connect</code>连接到槽，接收该信号<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">class MyWidget(QWidget):  </span><br><span class="line">    def mousePressEvent(self, event):  </span><br><span class="line">    	# 发射无参数的信号</span><br><span class="line">    	self.Signal_NoParameters.emit() </span><br><span class="line">        # 发射带一个参数(整数)的信号</span><br><span class="line">	self.Signal_OneParameter.emit(1) </span><br><span class="line">	# 发射带一个参数(整数)的重载版本的信号</span><br><span class="line">	self.Signal_OneParameter_Overload.emit(1)</span><br><span class="line">	# 发射带一个参数(字符串)的重载版本的信号</span><br><span class="line">	self.Signal_OneParameter_Overload.emit(&quot;abc&quot;)</span><br><span class="line">	# 发射带两个参数(整数,字符串)的信号</span><br><span class="line">	self.Signal_TwoParameters.emit(1,&quot;abc&quot;)</span><br><span class="line">	# 发射带两个参数(整数,整数)的重载版本的信号</span><br><span class="line">	self.Signal_TwoParameters_Overload.emit(1,2)</span><br><span class="line">	# 发射带两个参数(整数,字符串)的重载版本的信号</span><br><span class="line">	self.Signal_TwoParameters_Overload.emit (1,&quot;abc&quot;)</span><br></pre></td></tr></table></figure></p>
+
+  </div>
+  <div class="post-footer">
+    
+      <ul class="post-tag-list"><li class="post-tag-list-item"><a class="post-tag-list-link" href="/tags/python/">python</a></li></ul>
+    
+
+    <a href="#top" class="top">Back to Top</a>
+  </div>
+</article>
+<footer>
+  &copy; 2019
+  <span class="author">
+    Kai Zheng
+  </span>
+</footer>
+    </div>
+  </body>
+</html>
