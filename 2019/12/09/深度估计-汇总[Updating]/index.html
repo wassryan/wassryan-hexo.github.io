@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  
+  <title>Zhk&#39;s Space</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  
+  <meta name="keywords" content="生活,博客,前端,游戏">
+  
+  
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=1.02">
+  
+  
+    <link rel="alternate" href="/atom.xml " title="Zhk&#39;s Space" type="application/atom+xml">
+  
+
+  <link rel="stylesheet" href="/css/style.css">
+</head></html>
+  <body>
+    <div class="container">
+      <header class="header">
+  <div class="blog-title">
+    <a href="/" class="logo">Zhk&#39;s Space</a>
+    <div class="subtitle">Learning and Fighting!!!</div>
+  </div>
+  <nav class="navbar">
+    <ul class="menu">
+      
+        <li class="menu-item">
+          <a href="/" class="menu-item-link">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives" class="menu-item-link">Archives</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/About" class="menu-item-link">About</a>
+        </li>
+      
+    </ul>
+  </nav>
+</header>
+<article class="post">
+  <div class="post-title">
+    <h1 class="article-title"></h1>
+  </div>
+   <div class="post-meta">
+    <span class="post-time">2019-12-09</span>
+  </div>
+  <div class="post-content">
+    <h2 id="单目深度估计"><a href="#单目深度估计" class="headerlink" title="单目深度估计"></a>单目深度估计</h2><h3 id="1-利用双目立体视觉的空间约束"><a href="#1-利用双目立体视觉的空间约束" class="headerlink" title="1 利用双目立体视觉的空间约束"></a>1 利用双目立体视觉的空间约束</h3><p>left/right image作为各自的监督信号</p>
+<p>1.1 《Unsupervised Monocular Depth Estimation with Left-Right Consistency》</p>
+<p>Method：利用获得的左右两张图片，分别作为各自的监督信号，训练两试图相互转换的function。利用计算视差，通过视差计算得到深度。</p>
+<p><img src="./markdown图片/depth1.png" alt="屏幕快照 1" style="zoom:40%;"></p>
+<p>1.2 《Semi-Supervised Deep Learning for Monocular Depth Map Prediction》——无代码</p>
+<p><em>半监督：监督loss+无监督loss+smoothness loss</em></p>
+<ul>
+<li>监督：左右图各自预测的depth（和sparse depth去）计算loss(在<strong>sparse depth有值的区域</strong>）</li>
+<li>无监督：预测的depth和单视图，通过相机内参转换到另一视图，计算warp视图的loss（间接监督了depth）</li>
+</ul>
+<p><img src="./markdown图片/depth2.png" alt="屏幕快照 1" style="zoom:25%;"></p>
+<h3 id="2-利用视频相邻帧作为监督信号"><a href="#2-利用视频相邻帧作为监督信号" class="headerlink" title="2 利用视频相邻帧作为监督信号"></a>2 利用视频相邻帧作为监督信号</h3><p>预测相机位姿和depth</p>
+<p>2.1《Unsupervised Learning of Depth and Ego-Motion from Video》</p>
+<p>Method：</p>
+<ul>
+<li>前后帧和当前帧，通过<code>pose CNN</code>的方法来预测pose的参数，再把相邻帧warp到当前帧（过程中使用到<code>depth CNN</code>预测得到的depth作为输入），计算合成的视图的像素之间的loss。</li>
+<li>提出使用<code>explainability mask</code>来识别场景中<strong>运动的物体、遮挡或消失的物体</strong>（<em>这些物体是和相机位姿变换规律违背的，无法预测的，所以让这些物体的像素产生的loss降低</em>）</li>
+</ul>
+<p><img src="./markdown图片/depth3.png" alt="屏幕快照 1" style="zoom:50%;"></p>
+<p>2.2 2019-Digging Into Self-Supervised Monocular Depth Estimation</p>
+<ul>
+<li>提出了<code>minimum reprojection loss</code>代替<code>average loss</code>代替对前后帧获得的loss取平均的策略【解决遮挡问题】</li>
+<li>一个<code>full-resolution multi-scale</code>的采样方法（对每个level的depth map都upsample到输入分辨率的尺寸去做reproject）：【解决visual artifacts(视觉假象)】</li>
+<li>一个<code>auto-masking loss</code>(对图像中相对静止或静止的像素mask取0) 【忽视和camera motion假设的相反的像素】</li>
+</ul>
+<p><img src="./markdown图片/depth9.png" alt="屏幕快照 1" style="zoom:50%;"></p>
+<h3 id="3-结合表面法向量联合训练"><a href="#3-结合表面法向量联合训练" class="headerlink" title="3 结合表面法向量联合训练"></a>3 结合表面法向量联合训练</h3><p>3.1 《GeoNet: Geometric Neural Network》</p>
+<p>Method：</p>
+<ul>
+<li>提出使用<code>depth</code>和<code>normal</code>联合训练，同时从<strong>单张图片</strong>预测<strong>normal和depth</strong></li>
+<li>Depth-to-Normal：由于直接用<code>CNN</code>以图像为输入预测depth是有缺陷的（无法考虑到像素点之间的<strong>几何约束</strong>），所以提出使用<strong>粗糙的normal来联合depth</strong>去预测refined normal。</li>
+<li>Normal-to-Depth：使用<strong>核函数</strong>，去从normal和depth计算refined depth</li>
+</ul>
+<p><img src="./markdown图片/depth4.png" alt="屏幕快照 1" style="zoom:30%;"></p>
+<p>3.2 2019-Enforcing geometric constraints of virtual normal for depth prediction</p>
+<p>Method:</p>
+<ul>
+<li>改进surface normal，提出virtual normal【相⽐比 surface normal(选取的⽤用于计算normal的平⾯面的local patch太⼩小，并且由于3D点云的噪声点对其影响 很⼤大)，virtual normal由于特殊的设定，能够对local patch和3D点云噪声有鲁棒性】</li>
+</ul>
+<p><img src="./markdown图片/depth10.png" alt="屏幕快照 1" style="zoom:30%;"></p>
+<h3 id="4-分解depth-estimation任务"><a href="#4-分解depth-estimation任务" class="headerlink" title="4 分解depth estimation任务"></a>4 分解depth estimation任务</h3><p>分解为：<code>view synthesis</code>+<code>stereo matching</code></p>
+<p>4.1 2018-Single View Stereo Matching</p>
+<p>Method:</p>
+<ul>
+<li>depth estimation可以被分解为两个问题：<code>view synthesis</code>+<code>stereo matching</code></li>
+<li>结合view synthesis（从左视图预测右视），并计算视差图，进而计算得深度图</li>
+<li><code>view synthesis</code>：采用视差概率图加权（预测每个视差值下的概率，加权得到最终的视差图，生成右视图，使得loss对其可导，能用神经网络训练）</li>
+<li><code>stereo matching</code>：采用DispNetC（其中的1D correlation layer）和DispFullNet</li>
+</ul>
+<p><img src="./markdown图片/depth5.png" alt="屏幕快照 1" style="zoom:50%;"></p>
+<h3 id="5-结合运动和边缘信息联合训练"><a href="#5-结合运动和边缘信息联合训练" class="headerlink" title="5 结合运动和边缘信息联合训练"></a>5 结合运动和边缘信息联合训练</h3><p>5.1 2018-LEGO: Learning Edge with Geometry all at Once by Watching Videos</p>
+<p>（论文有点难看懂，以后再看）</p>
+<p><img src="./markdown图片/depth6.png" alt="屏幕快照 1" style="zoom:40%;"></p>
+<h3 id="6-利用分割作为attention联合depth来训练"><a href="#6-利用分割作为attention联合depth来训练" class="headerlink" title="6 利用分割作为attention联合depth来训练"></a>6 利用分割作为attention联合depth来训练</h3><p>6.1 2018-Look Deeper into Depth: Monocular Depth Estimation with Semantic Booster and Attention-Driven Loss</p>
+<ul>
+<li>分析数据集<code>depth</code>的分布，提出更多关注正样本的loss</li>
+<li>提出使用<strong>语义分割</strong>和depth预测的loss【更多中心在loss这一块】</li>
+<li>设计网络结构：融合depth和semantic的特征</li>
+</ul>
+<p><img src="./markdown图片/depth7.png" alt="屏幕快照 1" style="zoom:40%;"></p>
+<h3 id="7-改进Loss"><a href="#7-改进Loss" class="headerlink" title="7 改进Loss"></a>7 改进Loss</h3><p>7.1 2018-Deep Ordinal Regression Network for Monocular Depth Estimation</p>
+<p>【使用Ordinal Loss代替MSE Loss】</p>
+<ul>
+<li>当前的网络的问题：<ul>
+<li>使用MSE作为loss：slow convergence/ unsatisfactory local solutions</li>
+<li>复杂的网络(为了获得high-resolution的depth map)：skip-connections/multi-layer deconv</li>
+</ul>
+</li>
+<li>Method<ul>
+<li>spacing-increasing discretization(SID) strategy：离散depth并recast【depth prediction的<strong>不确定性</strong>随着depth的增加<strong>而增加</strong>(远距离，depth的预测范围更大)，所以在预测larger depth时需要<strong>允许</strong>相对<strong>更大的error</strong>，来避免larger depth差值的影响产生更大的影响。】</li>
+<li>采用multi-scale network(ASPP模块)：避免使用spatial pooling 或 并行地使用多尺度特征</li>
+</ul>
+</li>
+</ul>
+<p><img src="./markdown图片/depth8.png" alt="屏幕快照 1" style="zoom:40%;"></p>
+
+  </div>
+  <div class="post-footer">
+    
+
+    <a href="#top" class="top">Back to Top</a>
+  </div>
+</article>
+<footer>
+  &copy; 2019
+  <span class="author">
+    Kai Zheng
+  </span>
+</footer>
+    </div>
+  </body>
+</html>
