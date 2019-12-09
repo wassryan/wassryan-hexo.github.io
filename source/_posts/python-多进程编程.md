@@ -1,7 +1,7 @@
 ---
-title: 'python-多进程编程'
+title: 'Python-多进程编程'
 date: 2019-12-02 14:56:23
-tags: [python]
+tags: [Python]
 ---
 这篇文章会讲一下python中的多线程和多进程
 

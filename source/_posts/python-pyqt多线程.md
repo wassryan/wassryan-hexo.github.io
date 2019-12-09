@@ -1,7 +1,7 @@
 ---
-title: python-pyqt多线程
+title: Python-pyqt多线程
 date: 2019-02-03 10:41:34
-tags: [python]
+tags: [Python]
 categories: python
 
 ---
