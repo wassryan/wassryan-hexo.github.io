@@ -1,6 +1,12 @@
+---
+title: 深度补全-汇总Updating...
+date: 2019-12-09 20:21:23
+tags: [深度补全]
+---
+
 ## 深度补全
 
-#### 1 2017-《Sparse Invariant CNNs》
+#### 1. 2017-《Sparse Invariant CNNs》
 
 Method:
 
@@ -9,9 +15,11 @@ Method:
 - 提出了堆叠的sparse CNN的网络结构，kernel size从11x11逐渐递减到3x3
 - 提出sparse数据的skip connection结构
 
-<img src="./markdown图片/completion1.png" alt="屏幕快照 1" style="zoom:40%;" >
+<img src="/images/completion1.png">
 
-#### 2 2019-FuseNet
+
+
+#### 2. 2019-FuseNet
 
 《Learning Joint 2D-3D Representations for Depth Completion》
 
@@ -20,7 +28,9 @@ Method:
   - 第二条branch是**2个continuous convolution**（对点云进行操作的），最后把点云进行投影到2D平面空间。
   - 把两条branch**融合**（仅使用element-wise sum），得到这个2D-3D block的输出
 
-<img src="./markdown图片/completion2.png" alt="屏幕快照 1" style="zoom:35%;" >
+<img src="/images/completion2.png" alt="屏幕快照 1" style="zoom:35%;" >
+
+
 
 #### 3 2019-《Sparse and noisy LiDAR completion with RGB guidance and uncertainty》
 
@@ -32,9 +42,11 @@ Method:
   - late fusion：confidence map作为权重来指导两个branch的融合
 - 提出`confidence mask`（指引不确定性区域）
 
-<img src="./markdown图片/completion3.png" alt="屏幕快照 1" style="zoom:40%;" >
+<img src="/images/completion3.png" alt="屏幕快照 1" style="zoom:40%;" >
 
-#### 4 2019-《Self-Supervised Sparse-to-Dense: Self-Supervised Depth Completion from LiDAR and Monocular Camera》
+
+
+#### 4. 2019-《Self-Supervised Sparse-to-Dense: Self-Supervised Depth Completion from LiDAR and Monocular Camera》
 
 - 设计网络：学习一个映射，从稀疏深度到密集深度
 
@@ -45,7 +57,7 @@ Method:
 
 **补充：**PnP算法：通过一组对应的**图像2D点**和其在**世界坐标系下的3D点**，求解出**相机坐标系下的3D点**，将相机坐标系下的3D点和世界坐标系下的3D点计算得到**相机位姿**。【同理把世界坐标系下的3D点看成是上一帧相机坐标下的3D点，就能求出两帧之间相机的变换矩阵】
 
-<img src="./markdown图片/completion4.png" alt="屏幕快照 1" style="zoom:40%;" >
+<img src="/images/completion4.png" alt="屏幕快照 1" style="zoom:40%;" >
 
 白色方框：变量
 
@@ -59,7 +71,9 @@ Method:
 
 **inference**：只需要当前帧$RGBd_1$作为输入，输出预测深度$pred_1$
 
-#### 5 DeepLiDAR
+
+
+#### 5. DeepLiDAR
 
 Method
 
@@ -67,5 +81,6 @@ Method
 - 提出encoder-decoder结构（**DCU模块**）：融合`sparse depth`和`color image`
 - 学习一个**confidence mask来解决遮挡**；生成**attention map来融合depth**(来自两个pathway的color image和surface normals中的深度预测)【confidence mask(降低在遮挡区域的权重)来解决混合的雷达信号】
 
-<img src="./markdown图片/DeepLiDAR.png" alt="屏幕快照 1" style="zoom:40%;" >
+<img src="/images/DeepLiDAR.png" alt="屏幕快照 1" style="zoom:40%;" >
+
 
