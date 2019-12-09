@@ -4,7 +4,7 @@ date: 2019-12-05 20:21:10
 tags: [深度估计]
 ---
 
-## 单目深度估计
+## 深度估计
 
 ### 1. 利用双目立体视觉的空间约束
 
@@ -14,7 +14,7 @@ left/right image作为各自的监督信号
 
 Method：利用获得的左右两张图片，分别作为各自的监督信号，训练两试图相互转换的function。利用计算视差，通过视差计算得到深度。
 
-<img src="images/depth1.png">
+<img src="/images/depth1.png">
 
 
 
@@ -25,7 +25,7 @@ Method：利用获得的左右两张图片，分别作为各自的监督信号�
 - 监督：左右图各自预测的depth（和sparse depth去）计算loss(在**sparse depth有值的区域**）
 - 无监督：预测的depth和单视图，通过相机内参转换到另一视图，计算warp视图的loss（间接监督了depth）
 
-<img src="images/depth2.png">
+<img src="/images/depth2.png">
 
 
 
@@ -44,7 +44,7 @@ Method：
 
 
 
-2.2. 2019-Digging Into Self-Supervised Monocular Depth Estimation
+2.2. 《Digging Into Self-Supervised Monocular Depth Estimation》2019
 
 * 提出了`minimum reprojection loss`代替`average loss`代替对前后帧获得的loss取平均的策略【解决遮挡问题】
 * 一个`full-resolution multi-scale`的采样方法（对每个level的depth map都upsample到输入分辨率的尺寸去做reproject）：【解决visual artifacts(视觉假象)】
@@ -54,9 +54,9 @@ Method：
 
 
 
-### 3 结合表面法向量联合训练
+### 3. 结合表面法向量联合训练
 
-3.1 《GeoNet: Geometric Neural Network》
+3.1. 《GeoNet: Geometric Neural Network》
 
 Method：
 
@@ -68,7 +68,7 @@ Method：
 
 
 
-3.2. 2019-Enforcing geometric constraints of virtual normal for depth prediction
+3.2. 2019-《Enforcing geometric constraints of virtual normal for depth prediction》
 
 Method:
 
@@ -82,7 +82,7 @@ Method:
 
 分解为：`view synthesis`+`stereo matching`
 
-4.1. 2018-Single View Stereo Matching
+4.1. 《Single View Stereo Matching》2018
 
 Method:
 
@@ -97,7 +97,7 @@ Method:
 
 ### 5. 结合运动和边缘信息联合训练
 
-5.1. 2018-LEGO: Learning Edge with Geometry all at Once by Watching Videos
+5.1. 《LEGO: Learning Edge with Geometry all at Once by Watching Videos》2018
 
 （论文有点难看懂，以后再看）
 
@@ -107,7 +107,7 @@ Method:
 
 ### 6. 利用分割作为attention联合depth来训练
 
-6.1. 2018-Look Deeper into Depth: Monocular Depth Estimation with Semantic Booster and Attention-Driven Loss
+6.1. 《Look Deeper into Depth: Monocular Depth Estimation with Semantic Booster and Attention-Driven Loss》2018
 
 - 分析数据集`depth`的分布，提出更多关注正样本的loss
 - 提出使用**语义分割**和depth预测的loss【更多中心在loss这一块】
@@ -119,7 +119,7 @@ Method:
 
 ### 7. 改进Loss
 
-7.1. 2018-Deep Ordinal Regression Network for Monocular Depth Estimation
+7.1. 《Deep Ordinal Regression Network for Monocular Depth Estimation》2018
 
 【使用Ordinal Loss代替MSE Loss】
 

@@ -6,7 +6,7 @@ tags: [深度补全]
 
 ## 深度补全
 
-#### 1. 2017-《Sparse Invariant CNNs》
+#### 1. 《Sparse Invariant CNNs》2017
 
 Method:
 
@@ -19,7 +19,7 @@ Method:
 
 
 
-#### 2. 2019-FuseNet
+#### 2. FuseNet2019
 
 《Learning Joint 2D-3D Representations for Depth Completion》
 
@@ -32,7 +32,7 @@ Method:
 
 
 
-#### 3 2019-《Sparse and noisy LiDAR completion with RGB guidance and uncertainty》
+#### 3. 《Sparse and noisy LiDAR completion with RGB guidance and uncertainty》2019
 
 - 提出global和local信息的概念（采用双分支结构）
   - global：LiDAR数据缺少或不正确的区域（物体边界）【使用RGB来指导预测depth】
@@ -46,7 +46,7 @@ Method:
 
 
 
-#### 4. 2019-《Self-Supervised Sparse-to-Dense: Self-Supervised Depth Completion from LiDAR and Monocular Camera》
+#### 4. 《Self-Supervised Sparse-to-Dense: Self-Supervised Depth Completion from LiDAR and Monocular Camera》2019
 
 - 设计网络：学习一个映射，从稀疏深度到密集深度
 
@@ -73,7 +73,7 @@ Method:
 
 
 
-#### 5. DeepLiDAR
+#### 5. DeepLiDAR2019
 
 Method
 
