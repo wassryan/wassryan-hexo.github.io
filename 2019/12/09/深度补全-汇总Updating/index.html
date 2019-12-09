@@ -53,7 +53,7 @@
     <span class="post-time">2019-12-09</span>
   </div>
   <div class="post-content">
-    <h2 id="深度补全"><a href="#深度补全" class="headerlink" title="深度补全"></a>深度补全</h2><h4 id="1-2017-《Sparse-Invariant-CNNs》"><a href="#1-2017-《Sparse-Invariant-CNNs》" class="headerlink" title="1 2017-《Sparse Invariant CNNs》"></a>1 2017-《Sparse Invariant CNNs》</h4><p>Method:</p>
+    <h2 id="深度补全"><a href="#深度补全" class="headerlink" title="深度补全"></a>深度补全</h2><h4 id="1-2017-《Sparse-Invariant-CNNs》"><a href="#1-2017-《Sparse-Invariant-CNNs》" class="headerlink" title="1. 2017-《Sparse Invariant CNNs》"></a>1. 2017-《Sparse Invariant CNNs》</h4><p>Method:</p>
 <ul>
 <li>提出一个能显式考虑缺失数据location的卷积操作——<code>Sparse RCNN</code></li>
 <li>提出了针对稀疏输入的数据的特殊CNN结构（同时处理<code>mask</code>和<code>input</code>）</li>
@@ -61,7 +61,7 @@
 <li>提出sparse数据的skip connection结构</li>
 </ul>
 <p><img src="/images/completion1.png"></p>
-<h4 id="2-2019-FuseNet"><a href="#2-2019-FuseNet" class="headerlink" title="2 2019-FuseNet"></a>2 2019-FuseNet</h4><p>《Learning Joint 2D-3D Representations for Depth Completion》</p>
+<h4 id="2-2019-FuseNet"><a href="#2-2019-FuseNet" class="headerlink" title="2. 2019-FuseNet"></a>2. 2019-FuseNet</h4><p>《Learning Joint 2D-3D Representations for Depth Completion》</p>
 <ul>
 <li>提出了2D-3D Block的模块：该模块同时获得2D的特征，以及<strong>3D的特征</strong>（在3D点云中寻找该点附近的点云，通过<strong>MLP编码</strong>，计算邻近点云的特征来表示对该点云的<strong>权重</strong>），将2D的特征和3D的特征融合，输出这个block的最终特征<ul>
 <li>第一条branch为<strong>多尺度的2D conv</strong>（由绿色的上下两个scale组成，第一个scale是stride=1的，第二个scale是stride=2的）</li>
@@ -85,7 +85,7 @@
 <li>提出<code>confidence mask</code>（指引不确定性区域）</li>
 </ul>
 <p><img src="/images/completion3.png" alt="屏幕快照 1" style="zoom:40%;"></p>
-<h4 id="4-2019-《Self-Supervised-Sparse-to-Dense-Self-Supervised-Depth-Completion-from-LiDAR-and-Monocular-Camera》"><a href="#4-2019-《Self-Supervised-Sparse-to-Dense-Self-Supervised-Depth-Completion-from-LiDAR-and-Monocular-Camera》" class="headerlink" title="4 2019-《Self-Supervised Sparse-to-Dense: Self-Supervised Depth Completion from LiDAR and Monocular Camera》"></a>4 2019-《Self-Supervised Sparse-to-Dense: Self-Supervised Depth Completion from LiDAR and Monocular Camera》</h4><ul>
+<h4 id="4-2019-《Self-Supervised-Sparse-to-Dense-Self-Supervised-Depth-Completion-from-LiDAR-and-Monocular-Camera》"><a href="#4-2019-《Self-Supervised-Sparse-to-Dense-Self-Supervised-Depth-Completion-from-LiDAR-and-Monocular-Camera》" class="headerlink" title="4. 2019-《Self-Supervised Sparse-to-Dense: Self-Supervised Depth Completion from LiDAR and Monocular Camera》"></a>4. 2019-《Self-Supervised Sparse-to-Dense: Self-Supervised Depth Completion from LiDAR and Monocular Camera》</h4><ul>
 <li><p>设计网络：学习一个映射，从稀疏深度到密集深度</p>
 </li>
 <li><p>提出了一个self-supervised网络（不需要密集的depth标签）</p>
@@ -104,7 +104,7 @@
 <p>绿色：损失函数</p>
 <p><strong>training</strong>：需要当前帧$RGBd_1$和相邻帧$RGB_2$提供监督信号（$RGBd=RGB+depth$）</p>
 <p><strong>inference</strong>：只需要当前帧$RGBd_1$作为输入，输出预测深度$pred_1$</p>
-<h4 id="5-DeepLiDAR"><a href="#5-DeepLiDAR" class="headerlink" title="5 DeepLiDAR"></a>5 DeepLiDAR</h4><p>Method</p>
+<h4 id="5-DeepLiDAR"><a href="#5-DeepLiDAR" class="headerlink" title="5. DeepLiDAR"></a>5. DeepLiDAR</h4><p>Method</p>
 <ul>
 <li>提出从sparse LiDAR depth+surface和color image（分别预测dense depth）【surface normal是预先计算得到】</li>
 <li>提出encoder-decoder结构（<strong>DCU模块</strong>）：融合<code>sparse depth</code>和<code>color image</code></li>
