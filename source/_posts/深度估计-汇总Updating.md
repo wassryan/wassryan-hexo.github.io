@@ -12,7 +12,7 @@ left/right image作为各自的监督信号
 
 1.1. 《Unsupervised Monocular Depth Estimation with Left-Right Consistency》
 
-Method：利用获得的左右两张图片，分别作为各自的监督信号，训练两试图相互转换的function。利用计算视差，通过视差计算得到深度。
+Method：利用获得的左右两张图片，分别作为各自的监督信号，训练两获得视差图，计算合成图的loss。利用计算视差，通过视差计算得到深度
 
 <img src="/images/depth1.png">
 
@@ -29,6 +29,21 @@ Method：利用获得的左右两张图片，分别作为各自的监督信号�
 
 
 
+1.3. 《Single View Stereo Matching》2018
+
+把`depth estimation`分解为：`view synthesis`+`stereo matching`两个步骤去做
+
+Method:
+
+- depth estimation可以被分解为两个问题：`view synthesis`+`stereo matching`
+- 结合view synthesis（从左视图预测右视），并计算视差图，进而计算得深度图
+- `view synthesis`：采用视差概率图加权（预测每个视差值下的概率，加权得到最终的视差图，生成右视图，使得loss对其可导，能用神经网络训练）
+- `stereo matching`：采用DispNetC（其中的1D correlation layer）和DispFullNet
+
+<img src="/images/depth5.png">
+
+
+
 ### 2. 利用视频相邻帧作为监督信号
 
 预测相机位姿和depth
@@ -37,7 +52,7 @@ Method：利用获得的左右两张图片，分别作为各自的监督信号�
 
 Method：
 
-- 前后帧和当前帧，通过`pose CNN`的方法来预测pose的参数，再把相邻帧warp到当前帧（过程中使用到`depth CNN`预测得到的depth作为输入），计算合成的视图的像素之间的loss。
+- 前后帧和当前帧，通过`pose CNN`的方法来预测pose的参数，再把相邻帧warp到当前帧（过程中使用到`depth CNN`预测得到的depth作为输入），计算合成的视图的像素之间的loss。【前后帧的3D坐标转换关系为`PnP算法`获得，再映射到图像坐标系】
 - 提出使用`explainability mask`来识别场景中**运动的物体、遮挡或消失的物体**（*这些物体是和相机位姿变换规律违背的，无法预测的，所以让这些物体的像素产生的loss降低*）
 
 <img src="/images/depth3.png">
@@ -75,23 +90,6 @@ Method:
 - 改进surface normal，提出virtual normal【相⽐比 surface normal(选取的⽤用于计算normal的平⾯面的local patch太⼩小，并且由于3D点云的噪声点对其影响 很⼤大)，virtual normal由于特殊的设定，能够对local patch和3D点云噪声有鲁棒性】
 
 <img src="/images/depth10.png">
-
-
-
-### 4. 分解depth estimation任务
-
-分解为：`view synthesis`+`stereo matching`
-
-4.1. 《Single View Stereo Matching》2018
-
-Method:
-
-- depth estimation可以被分解为两个问题：`view synthesis`+`stereo matching`
-- 结合view synthesis（从左视图预测右视），并计算视差图，进而计算得深度图
-- `view synthesis`：采用视差概率图加权（预测每个视差值下的概率，加权得到最终的视差图，生成右视图，使得loss对其可导，能用神经网络训练）
-- `stereo matching`：采用DispNetC（其中的1D correlation layer）和DispFullNet
-
-<img src="/images/depth5.png">
 
 
 
