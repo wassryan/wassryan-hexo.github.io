@@ -55,7 +55,7 @@
   <div class="post-content">
     <h2 id="深度估计"><a href="#深度估计" class="headerlink" title="深度估计"></a>深度估计</h2><h3 id="1-利用双目立体视觉的空间约束"><a href="#1-利用双目立体视觉的空间约束" class="headerlink" title="1. 利用双目立体视觉的空间约束"></a>1. 利用双目立体视觉的空间约束</h3><p>left/right image作为各自的监督信号</p>
 <p>1.1. 《Unsupervised Monocular Depth Estimation with Left-Right Consistency》</p>
-<p>Method：利用获得的左右两张图片，分别作为各自的监督信号，训练两试图相互转换的function。利用计算视差，通过视差计算得到深度。</p>
+<p>Method：利用获得的左右两张图片，分别作为各自的监督信号，训练两获得视差图，计算合成图的loss。利用计算视差，通过视差计算得到深度</p>
 <p><img src="/images/depth1.png"></p>
 <p>1.2. 《Semi-Supervised Deep Learning for Monocular Depth Map Prediction》——无代码</p>
 <p><em>半监督：监督loss+无监督loss+smoothness loss</em></p>
@@ -64,11 +64,21 @@
 <li>无监督：预测的depth和单视图，通过相机内参转换到另一视图，计算warp视图的loss（间接监督了depth）</li>
 </ul>
 <p><img src="/images/depth2.png"></p>
+<p>1.3. 《Single View Stereo Matching》2018</p>
+<p>把<code>depth estimation</code>分解为：<code>view synthesis</code>+<code>stereo matching</code>两个步骤去做</p>
+<p>Method:</p>
+<ul>
+<li>depth estimation可以被分解为两个问题：<code>view synthesis</code>+<code>stereo matching</code></li>
+<li>结合view synthesis（从左视图预测右视），并计算视差图，进而计算得深度图</li>
+<li><code>view synthesis</code>：采用视差概率图加权（预测每个视差值下的概率，加权得到最终的视差图，生成右视图，使得loss对其可导，能用神经网络训练）</li>
+<li><code>stereo matching</code>：采用DispNetC（其中的1D correlation layer）和DispFullNet</li>
+</ul>
+<p><img src="/images/depth5.png"></p>
 <h3 id="2-利用视频相邻帧作为监督信号"><a href="#2-利用视频相邻帧作为监督信号" class="headerlink" title="2. 利用视频相邻帧作为监督信号"></a>2. 利用视频相邻帧作为监督信号</h3><p>预测相机位姿和depth</p>
 <p>2.1.《Unsupervised Learning of Depth and Ego-Motion from Video》</p>
 <p>Method：</p>
 <ul>
-<li>前后帧和当前帧，通过<code>pose CNN</code>的方法来预测pose的参数，再把相邻帧warp到当前帧（过程中使用到<code>depth CNN</code>预测得到的depth作为输入），计算合成的视图的像素之间的loss。</li>
+<li>前后帧和当前帧，通过<code>pose CNN</code>的方法来预测pose的参数，再把相邻帧warp到当前帧（过程中使用到<code>depth CNN</code>预测得到的depth作为输入），计算合成的视图的像素之间的loss。【前后帧的3D坐标转换关系为<code>PnP算法</code>获得，再映射到图像坐标系】</li>
 <li>提出使用<code>explainability mask</code>来识别场景中<strong>运动的物体、遮挡或消失的物体</strong>（<em>这些物体是和相机位姿变换规律违背的，无法预测的，所以让这些物体的像素产生的loss降低</em>）</li>
 </ul>
 <p><img src="/images/depth3.png"></p>
@@ -93,16 +103,6 @@
 <li>改进surface normal，提出virtual normal【相⽐比 surface normal(选取的⽤用于计算normal的平⾯面的local patch太⼩小，并且由于3D点云的噪声点对其影响 很⼤大)，virtual normal由于特殊的设定，能够对local patch和3D点云噪声有鲁棒性】</li>
 </ul>
 <p><img src="/images/depth10.png"></p>
-<h3 id="4-分解depth-estimation任务"><a href="#4-分解depth-estimation任务" class="headerlink" title="4. 分解depth estimation任务"></a>4. 分解depth estimation任务</h3><p>分解为：<code>view synthesis</code>+<code>stereo matching</code></p>
-<p>4.1. 《Single View Stereo Matching》2018</p>
-<p>Method:</p>
-<ul>
-<li>depth estimation可以被分解为两个问题：<code>view synthesis</code>+<code>stereo matching</code></li>
-<li>结合view synthesis（从左视图预测右视），并计算视差图，进而计算得深度图</li>
-<li><code>view synthesis</code>：采用视差概率图加权（预测每个视差值下的概率，加权得到最终的视差图，生成右视图，使得loss对其可导，能用神经网络训练）</li>
-<li><code>stereo matching</code>：采用DispNetC（其中的1D correlation layer）和DispFullNet</li>
-</ul>
-<p><img src="/images/depth5.png"></p>
 <h3 id="5-结合运动和边缘信息联合训练"><a href="#5-结合运动和边缘信息联合训练" class="headerlink" title="5. 结合运动和边缘信息联合训练"></a>5. 结合运动和边缘信息联合训练</h3><p>5.1. 《LEGO: Learning Edge with Geometry all at Once by Watching Videos》2018</p>
 <p>（论文有点难看懂，以后再看）</p>
 <p><img src="/images/depth6.png"></p>
@@ -139,7 +139,7 @@
   </div>
 </article>
 <footer>
-  &copy; 2019
+  &copy; 2020
   <span class="author">
     Kai Zheng
   </span>
