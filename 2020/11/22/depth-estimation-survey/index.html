@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+  <!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  
+  <title>depth estimation survey - Zhk&#39;s Space</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  
+  <meta name="keywords" content="Depth" estimation>
+  
+  
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=1.02">
+  
+  
+    <link rel="alternate" href="/atom.xml " title="Zhk&#39;s Space" type="application/atom+xml">
+  
+
+  <link rel="stylesheet" href="/css/style.css">
+</head></html>
+  <body>
+    <div class="container">
+      <header class="header">
+  <div class="blog-title">
+    <a href="/" class="logo">Zhk&#39;s Space</a>
+    <div class="subtitle">Learning and Fighting!!!</div>
+  </div>
+  <nav class="navbar">
+    <ul class="menu">
+      
+        <li class="menu-item">
+          <a href="/" class="menu-item-link">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives" class="menu-item-link">Archives</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/About" class="menu-item-link">About</a>
+        </li>
+      
+    </ul>
+  </nav>
+</header>
+<article class="post">
+  <div class="post-title">
+    <h1 class="article-title">depth estimation survey</h1>
+  </div>
+   <div class="post-meta">
+    <span class="post-time">2020-11-22</span>
+  </div>
+  <div class="post-content">
+    <h2 id="Depth-Estimation"><a href="#Depth-Estimation" class="headerlink" title="Depth Estimation"></a>Depth Estimation</h2><h3 id="1-Use-Spatial-constraints-using-binocular-stereo-vision"><a href="#1-Use-Spatial-constraints-using-binocular-stereo-vision" class="headerlink" title="1. Use Spatial constraints using binocular stereo vision"></a>1. Use Spatial constraints using binocular stereo vision</h3><p>use left/right image as supervision</p>
+<p>1.1. 《Unsupervised Monocular Depth Estimation with Left-Right Consistency》</p>
+<p>Method：Use the left and right picture as their respective supervision, then train the model to get disparity map with the loss calculated from composite picture. In the inference phase, obtain the depth map  via calculating the disparity.</p>
+<p><img src="/images/depth1.png"></p>
+<p>1.2. 《Semi-Supervised Deep Learning for Monocular Depth Map Prediction》——<em>without code</em></p>
+<p><em>semi-supervised：supervised loss+unsupervised loss+smoothness loss</em></p>
+<ul>
+<li>supervised：calculate the loss between two depth map predicted from left and right images.</li>
+<li>unsupervised：calculate another view with the intrinsic parameters in the camera, predicted depth map and one view, then compute this view with the ground truth view image.</li>
+</ul>
+<p><img src="/images/depth2.png"></p>
+<p>1.3. 《Single View Stereo Matching》2018</p>
+<p>Split the <code>depth estimation</code> into <code>view synthesis</code> and <code>stereo matching</code>.  </p>
+<p>Method:</p>
+<ul>
+<li>depth estimation task can be split into two main procedure: <code>view synthesis</code> and <code>stereo matching</code>.</li>
+<li>calculate the disparity map via <code>view synthesis</code>, then compute the depth map.</li>
+<li><code>view synthesis</code>：predict the probability under each disparity value, then get the final disparity map by weighting, and then generate the right view to make the loss derivable, finally train the CNN.</li>
+<li><code>stereo matching</code>：utilize <em>DispNetC</em> and <em>DispFullNet</em></li>
+</ul>
+<p><img src="/images/depth5.png"></p>
+<h3 id="2-Use-adjacent-frames-of-video-as-supervision"><a href="#2-Use-adjacent-frames-of-video-as-supervision" class="headerlink" title="2. Use adjacent frames of video as supervision"></a>2. Use adjacent frames of video as supervision</h3><p>predict camera pose and depth</p>
+<p>2.1.《Unsupervised Learning of Depth and Ego-Motion from Video》</p>
+<p>Method：</p>
+<ul>
+<li>Use the adjacent frames to predict the pose parameters through the <code>pos CNN</code>, then warp one frame to another frame, finally calculate the loss between synthetic view and orginal view.</li>
+<li>Propose using <code>explainability mask</code> to identify the moving objects, occluded or disappearing objects in the scene.（<em>These objects are contrary to the law of camera pose transformation and cannot be predicted, so the loss of pixels of these objects will be reduced to a small value</em>）</li>
+</ul>
+<p><img src="/images/depth3.png"></p>
+<p>2.2. 《Digging Into Self-Supervised Monocular Depth Estimation》2019</p>
+<ul>
+<li>Propose the strategy of <code>minimum reprojection loss</code> to replace<code>average loss</code>.【solve the occlusion problem】</li>
+<li>A <code>full-resolution multi-scale</code> sampling method（upsample the depth map of each level t o the size of input resolution to do reprojection）【solve visual artifacts】</li>
+<li>An <code>auto-masking loss</code>(set the pixel to zero if t he pixels are static or relatively static.【Ignore the opposite pixel contrary to the camera motion hypothesis】</li>
+</ul>
+<p><img src="/images/depth9.png"></p>
+<h3 id="3-Combined-training-with-surface-normal-vectors"><a href="#3-Combined-training-with-surface-normal-vectors" class="headerlink" title="3. Combined training with surface normal vectors"></a>3. Combined training with surface normal vectors</h3><p>3.1. 《GeoNet: Geometric Neural Network》</p>
+<p>Method：</p>
+<ul>
+<li>Propose to combine <code>depth</code> and <code>normal</code> in training, predicting normal and depth from one view.</li>
+<li>Depth-to-Normal：Because it is flawed to directly use <code>CNN</code> to predict depth with images as input, so it proposes to use rough normal and depth to predict refined surface normal.</li>
+<li>Normal-to-Depth：Use kernel function to compute refined depth via normal and depth.</li>
+</ul>
+<p><img src="/images/depth4.png"></p>
+<p>3.2. 2019-《Enforcing geometric constraints of virtual normal for depth prediction》</p>
+<p>Method:</p>
+<ul>
+<li>改进surface normal，提出virtual normal【相⽐比 surface normal(选取的⽤用于计算normal的平⾯面的local patch太⼩小，并且由于3D点云的噪声点对其影响 很⼤大)，virtual normal由于特殊的设定，能够对local patch和3D点云噪声有鲁棒性】</li>
+</ul>
+<p><img src="/images/depth10.png"></p>
+<h3 id="5-Combined-motion-and-edge-information-while-joint-training"><a href="#5-Combined-motion-and-edge-information-while-joint-training" class="headerlink" title="5. Combined motion and edge information while joint training"></a>5. Combined motion and edge information while joint training</h3><p>5.1. 《LEGO: Learning Edge with Geometry all at Once by Watching Videos》2018</p>
+<p>To be done…</p>
+<p><img src="/images/depth6.png"></p>
+<h3 id="6-Use-segmentation-as-attention-with-depth-in-training"><a href="#6-Use-segmentation-as-attention-with-depth-in-training" class="headerlink" title="6. Use segmentation as attention with depth in training"></a>6. Use segmentation as attention with depth in training</h3><p>6.1. 《Look Deeper into Depth: Monocular Depth Estimation with Semantic Booster and Attention-Driven Loss》2018</p>
+<ul>
+<li>analyze the depth distribution of dataset, proposing paying more attention to the loss of positive samples.</li>
+<li>Propose a loss using semantic segmentation and depth prediction.</li>
+<li>Design a network: integrate the features of depth and semantics</li>
+</ul>
+<p><img src="/images/depth7.png"></p>
+<h3 id="7-Improve-Loss"><a href="#7-Improve-Loss" class="headerlink" title="7. Improve Loss"></a>7. Improve Loss</h3><p>7.1. 《Deep Ordinal Regression Network for Monocular Depth Estimation》2018</p>
+<p>【Use <code>Ordinal Loss</code> to replace <code>MSE Loss</code>】</p>
+<ul>
+<li>Existing problem in current method：<ul>
+<li>Using MSE loss：slow convergence/ unsatisfactory local solutions</li>
+<li>Complex network architecture: skip-connections/multi-layer deconv</li>
+</ul>
+</li>
+<li>Method<ul>
+<li>spacing-increasing discretization(SID) strategy：discretize depth and recast</li>
+<li>adopt multi-scale network (ASPP module)：avoid using spatial pooling or fusion multi-scale feature</li>
+</ul>
+</li>
+</ul>
+
+  </div>
+  <div class="post-footer">
+    
+      <ul class="post-tag-list"><li class="post-tag-list-item"><a class="post-tag-list-link" href="/tags/Depth-Estimation/">Depth Estimation</a></li></ul>
+    
+
+    <a href="#top" class="top">Back to Top</a>
+  </div>
+</article>
+<footer>
+  &copy; 2020
+  <span class="author">
+    Kai Zheng
+  </span>
+</footer>
+    </div>
+  </body>
+</html>
