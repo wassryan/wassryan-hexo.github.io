@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+  <!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  
+  <title>深度补全-汇总Updating... - Zhk&#39;s Space</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  
+  <meta name="keywords" content="深度补全">
+  
+  
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=1.02">
+  
+  
+    <link rel="alternate" href="/atom.xml " title="Zhk&#39;s Space" type="application/atom+xml">
+  
+
+  <link rel="stylesheet" href="/css/style.css">
+</head></html>
+  <body>
+    <div class="container">
+      <header class="header">
+  <div class="blog-title">
+    <a href="/" class="logo">Zhk&#39;s Space</a>
+    <div class="subtitle">Learning and Fighting!!!</div>
+  </div>
+  <nav class="navbar">
+    <ul class="menu">
+      
+        <li class="menu-item">
+          <a href="/" class="menu-item-link">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives" class="menu-item-link">Archives</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/About" class="menu-item-link">About</a>
+        </li>
+      
+    </ul>
+  </nav>
+</header>
+<article class="post">
+  <div class="post-title">
+    <h1 class="article-title">深度补全-汇总Updating...</h1>
+  </div>
+   <div class="post-meta">
+    <span class="post-time">2019-12-09</span>
+  </div>
+  <div class="post-content">
+    <h2 id="深度补全"><a href="#深度补全" class="headerlink" title="深度补全"></a>深度补全</h2><h4 id="1-《Sparse-Invariant-CNNs》2017"><a href="#1-《Sparse-Invariant-CNNs》2017" class="headerlink" title="1. 《Sparse Invariant CNNs》2017"></a>1. 《Sparse Invariant CNNs》2017</h4><p>Method:</p>
+<ul>
+<li>提出一个能显式考虑缺失数据location的卷积操作——<code>Sparse RCNN</code></li>
+<li>提出了针对稀疏输入的数据的特殊CNN结构（同时处理<code>mask</code>和<code>input</code>）</li>
+<li>提出了堆叠的sparse CNN的网络结构，kernel size从11x11逐渐递减到3x3</li>
+<li>提出sparse数据的skip connection结构</li>
+</ul>
+<p><img src="/images/completion1.png"></p>
+<h4 id="2-FuseNet2019"><a href="#2-FuseNet2019" class="headerlink" title="2. FuseNet2019"></a>2. FuseNet2019</h4><p>《Learning Joint 2D-3D Representations for Depth Completion》</p>
+<ul>
+<li>提出了2D-3D Block的模块：该模块同时获得2D的特征，以及<strong>3D的特征</strong>（在3D点云中寻找该点附近的点云，通过<strong>MLP编码</strong>，计算邻近点云的特征来表示对该点云的<strong>权重</strong>），将2D的特征和3D的特征融合，输出这个block的最终特征<ul>
+<li>第一条branch为<strong>多尺度的2D conv</strong>（由绿色的上下两个scale组成，第一个scale是stride=1的，第二个scale是stride=2的）</li>
+<li>第二条branch是<strong>2个continuous convolution</strong>（对点云进行操作的），最后把点云进行投影到2D平面空间。</li>
+<li>把两条branch<strong>融合</strong>（仅使用element-wise sum），得到这个2D-3D block的输出</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/completion2.png" alt="屏幕快照 1" style="zoom:35%;"></p>
+<h4 id="3-《Sparse-and-noisy-LiDAR-completion-with-RGB-guidance-and-uncertainty》2019"><a href="#3-《Sparse-and-noisy-LiDAR-completion-with-RGB-guidance-and-uncertainty》2019" class="headerlink" title="3. 《Sparse and noisy LiDAR completion with RGB guidance and uncertainty》2019"></a>3. 《Sparse and noisy LiDAR completion with RGB guidance and uncertainty》2019</h4><ul>
+<li>提出global和local信息的概念（采用双分支结构）<ul>
+<li>global：LiDAR数据缺少或不正确的区域（物体边界）【使用RGB来指导预测depth】</li>
+<li>local：LIDAR数据充足的地方</li>
+</ul>
+</li>
+<li>提出特征融合策略（采用early fusion和late fusion）<ul>
+<li>early fusion：global的guidance map来指导LIDAR</li>
+<li>late fusion：confidence map作为权重来指导两个branch的融合</li>
+</ul>
+</li>
+<li>提出<code>confidence mask</code>（指引不确定性区域）</li>
+</ul>
+<p><img src="/images/completion3.png" alt="屏幕快照 1" style="zoom:40%;"></p>
+<h4 id="4-《Self-Supervised-Sparse-to-Dense-Self-Supervised-Depth-Completion-from-LiDAR-and-Monocular-Camera》2019"><a href="#4-《Self-Supervised-Sparse-to-Dense-Self-Supervised-Depth-Completion-from-LiDAR-and-Monocular-Camera》2019" class="headerlink" title="4. 《Self-Supervised Sparse-to-Dense: Self-Supervised Depth Completion from LiDAR and Monocular Camera》2019"></a>4. 《Self-Supervised Sparse-to-Dense: Self-Supervised Depth Completion from LiDAR and Monocular Camera》2019</h4><ul>
+<li><p>设计网络：学习一个映射，从稀疏深度到密集深度</p>
+</li>
+<li><p>提出了一个self-supervised网络（不需要密集的depth标签）</p>
+<ul>
+<li>不用密集的gt_depth作为标签（所以是自监督的）</li>
+<li><code>Photometric loss</code>:对前后帧用PnP解决(对前后帧的<strong>特征点先匹配</strong>，代码中这是对数据的预处理中做的，采用的是<code>SIFT算法</code>，描述前后帧的特征匹配)，计算相机位姿变换，用根据位姿变换生成的rgb图和标准的rgb图计算<strong>误差</strong>，评估相机位姿的准确性(即间接评估了预测深度的准确性)。</li>
+<li><code>Depth loss</code>：计算存在depth区域的depth预测准确度</li>
+</ul>
+</li>
+</ul>
+<p><strong>补充：</strong>PnP算法：通过一组对应的<strong>图像2D点</strong>和其在<strong>世界坐标系下的3D点</strong>，求解出<strong>相机坐标系下的3D点</strong>，将相机坐标系下的3D点和世界坐标系下的3D点计算得到<strong>相机位姿</strong>。【同理把世界坐标系下的3D点看成是上一帧相机坐标下的3D点，就能求出两帧之间相机的变换矩阵】</p>
+<p><img src="/images/completion4.png" alt="屏幕快照 1" style="zoom:40%;"></p>
+<p>白色方框：变量</p>
+<p>红色：depth网络</p>
+<p>蓝色：计算模块（无可学习的参数）</p>
+<p>绿色：损失函数</p>
+<p><strong>training</strong>：需要当前帧$RGBd_1$和相邻帧$RGB_2$提供监督信号（$RGBd=RGB+depth$）</p>
+<p><strong>inference</strong>：只需要当前帧$RGBd_1$作为输入，输出预测深度$pred_1$</p>
+<h4 id="5-DeepLiDAR2019"><a href="#5-DeepLiDAR2019" class="headerlink" title="5. DeepLiDAR2019"></a>5. DeepLiDAR2019</h4><p>Method</p>
+<ul>
+<li>提出从sparse LiDAR depth+surface和color image（分别预测dense depth）【surface normal是预先计算得到】</li>
+<li>提出encoder-decoder结构（<strong>DCU模块</strong>）：融合<code>sparse depth</code>和<code>color image</code></li>
+<li>学习一个<strong>confidence mask来解决遮挡</strong>；生成<strong>attention map来融合depth</strong>(来自两个pathway的color image和surface normals中的深度预测)【confidence mask(降低在遮挡区域的权重)来解决混合的雷达信号】</li>
+</ul>
+<p><img src="/images/DeepLiDAR.png" alt="屏幕快照 1" style="zoom:40%;"></p>
+
+  </div>
+  <div class="post-footer">
+    
+      <ul class="post-tag-list"><li class="post-tag-list-item"><a class="post-tag-list-link" href="/tags/深度补全/">深度补全</a></li></ul>
+    
+
+    <a href="#top" class="top">Back to Top</a>
+  </div>
+</article>
+<footer>
+  &copy; 2021
+  <span class="author">
+    Kai Zheng
+  </span>
+</footer>
+    </div>
+  </body>
+</html>

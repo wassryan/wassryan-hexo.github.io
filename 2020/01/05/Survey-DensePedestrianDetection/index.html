@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+  <!DOCTYPE html>
+<html lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.9.0">
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1">
+  
+  <title>密集行人检测-汇总.md - Zhk&#39;s Space</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  
+  <meta name="keywords" content="行人检测">
+  
+  
+    <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=1.02">
+  
+  
+    <link rel="alternate" href="/atom.xml " title="Zhk&#39;s Space" type="application/atom+xml">
+  
+
+  <link rel="stylesheet" href="/css/style.css">
+</head></html>
+  <body>
+    <div class="container">
+      <header class="header">
+  <div class="blog-title">
+    <a href="/" class="logo">Zhk&#39;s Space</a>
+    <div class="subtitle">Learning and Fighting!!!</div>
+  </div>
+  <nav class="navbar">
+    <ul class="menu">
+      
+        <li class="menu-item">
+          <a href="/" class="menu-item-link">Home</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/archives" class="menu-item-link">Archives</a>
+        </li>
+      
+        <li class="menu-item">
+          <a href="/About" class="menu-item-link">About</a>
+        </li>
+      
+    </ul>
+  </nav>
+</header>
+<article class="post">
+  <div class="post-title">
+    <h1 class="article-title">密集行人检测-汇总.md</h1>
+  </div>
+   <div class="post-meta">
+    <span class="post-time">2020-01-05</span>
+  </div>
+  <div class="post-content">
+    <h3 id="密集场景下的人群检测"><a href="#密集场景下的人群检测" class="headerlink" title="密集场景下的人群检测"></a>密集场景下的人群检测</h3><p>行人检测论文汇总：<a href="https://www.starlg.cn/2018/08/17/Pedestrian-Detection-Sources/" target="_blank" rel="noopener">https://www.starlg.cn/2018/08/17/Pedestrian-Detection-Sources/</a></p>
+<h4 id="1-Repulsion-Loss-Detecting-Pedestrians-in-a-Crowd"><a href="#1-Repulsion-Loss-Detecting-Pedestrians-in-a-Crowd" class="headerlink" title="1. Repulsion Loss: Detecting Pedestrians in a Crowd"></a>1. Repulsion Loss: Detecting Pedestrians in a Crowd</h4><p><img src="/images/Repulsion loss.png" style="zoom:35%"></p>
+<ul>
+<li><p>face++（2017.11）CVPR2018</p>
+</li>
+<li><p>行人检测：类内遮挡（crowd遮挡）</p>
+</li>
+<li><p>问题：行人T与B重叠时，检测器检测到的行人特征相似，原本应该检测T的bbox偏移到B上。</p>
+</li>
+<li><p>解决：提出Repulsion损失</p>
+<ul>
+<li>要求：pred_box不仅接近目标T，并且远离周围的GT_box</li>
+<li>即：目标的吸引、目标的排斥</li>
+<li>Figure1：pred_box偏移到B时会产生惩罚</li>
+<li><img src="/images/Repulsion loss2.png" style="zoom:55%"></li>
+</ul>
+</li>
+<li><h5 id="Repulsion-Loss：https-blog-csdn-net-gbyy42299-article-details-83956648"><a href="#Repulsion-Loss：https-blog-csdn-net-gbyy42299-article-details-83956648" class="headerlink" title="Repulsion Loss：https://blog.csdn.net/gbyy42299/article/details/83956648"></a>Repulsion Loss：<a href="https://blog.csdn.net/gbyy42299/article/details/83956648" target="_blank" rel="noopener">https://blog.csdn.net/gbyy42299/article/details/83956648</a></h5><ul>
+<li><p>Repulsion loss定义：$L=L_{Attr}+\alpha<em>L_{RepGT}+\beta</em>L_{RepBox}$</p>
+</li>
+<li><p>$L_{Attr}：$即smooth l1损失，让pred和gt更接近</p>
+</li>
+<li><p>$L_{RepGT}：$使得pred_box $P$和周围的非目标框$G$尽可能远离（$G$是除匹配上的目标框意外的IOU最大的目标框，即和它overlap第二大的gt_box）</p>
+<ul>
+<li><p><strong>使用IOG而不是smooth l1 loss：</strong>若使用smooth l1 loss来进行pred_box和非目标框的排斥，只会让距离线性的增加，确保越远远好；但是IOG这类用交集区域来衡量loss的，却是检测框衡量的实质，只关注于最小化与非目标框的重叠区域。</p>
+</li>
+<li><p><strong>IOG 而不是IOU：</strong>使用Intersection over GT（IOG）而不是IOU，因为如果使用IOU，网络可以学习到<u>放大pred_box</u>来包含gt_box就能够使得距离最小（<strong>因为当$B^P$完全包含$G_{Rep}^P$时，IOU的分子部分交集时是固定的，而可以通过分母部分，扩大pre_box的面积，则并集的面积会增大，达到减少IOU的目的，但是实际上overlap区域并没有减小，没有达到实际效果</strong>），这并不是我们想要的，而我们使用$IoG(B,G)=\frac{area(B\cap G)}{area(G)}$，确保分母面积不改变，就可以规避这样的问题，只会要求分子overlap的区域减少</p>
+</li>
+<li><p>计算RepGT，当IoG越大，RepGT的loss就越大：<br>$$<br>L_{RepGT}=\frac{\sum_{P \in P_+}Smooth_{ln}(IoG(B^P,G_{Rep}^{P}))}{|P_+|}<br>$$</p>
+<p>$$<br>Smooth_{ln}=<br>\begin{cases}<br>  -ln(1-x), &amp;  x \leq \sigma \<br>  \frac{x-\sigma}{1-\sigma}-ln(1-\sigma), &amp; x &gt; \sigma<br>\end{cases}<br>$$</p>
+<p><strong>Note:</strong>$P_+$为所有positive的proposals，$B^P$为预测的positive的box，G为gt_box。$\sigma$是一个调整$L_{RepGT}$敏感程度的超参数，$\sum$和$|P_+|$相当于取平均</p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li>$L_{RepBox}：$使得pred_box $P_i$和周围的其他pred_box $P_j$尽可能远离，分别匹配上不同的gt_box，采用IOU来衡量距离<br>$$<br>L_{RepBox}=\frac{\sum_{i\neq j}Smooth_{ln}(IoU(B^{P_i}, B^{P_j}))}{\sum_{i\neq j}1[IoU(B^{P_i},B^{P_j})&gt;0]+\epsilon}<br>$$</li>
+</ul>
+<h4 id="2-Occlusion-aware-R-CNN-Detecting-pedestrians-in-a-Crowd"><a href="#2-Occlusion-aware-R-CNN-Detecting-pedestrians-in-a-Crowd" class="headerlink" title="2. Occlusion-aware R-CNN: Detecting pedestrians in a Crowd"></a>2. Occlusion-aware R-CNN: Detecting pedestrians in a Crowd</h4><ul>
+<li><p>中科院（2018.7）</p>
+</li>
+<li><p>目标：解决人群遮挡</p>
+</li>
+<li><p>主要：优化目标+网络结构</p>
+</li>
+<li><p>优化目标：</p>
+<ul>
+<li><p>$L_{reg}$：预测框逼近gt框</p>
+</li>
+<li><p>$L_{com}$：属于同一gt框的多个预测框尽量集中</p>
+<p><img src="/images/aggregation loss.png" style="zoom:55%"></p>
+</li>
+</ul>
+</li>
+<li><p>网络结构：</p>
+<ul>
+<li><p>修改ROI Pooling：人体具有特殊的结构，利用这个先验，将ROI区域切分出5个子区域，蓝色所示。对每个蓝色框经过ROI Pooling操作后变成$m\times m$的特征图，再将特征进行element-wise sum，将5个局部的特征合并与1个整体的特征合并，去做最后的分类和回归。</p>
+</li>
+<li><p>my_opinion：仅仅做element-wise sum，缺乏严谨性；可能需要更合理的特征融合方式。</p>
+<p><img src="/images/POROI.png" style="zoom:55%"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-Bi-box-regression-for-pedestrian-detection-and-occlusion-estimation-2018"><a href="#4-Bi-box-regression-for-pedestrian-detection-and-occlusion-estimation-2018" class="headerlink" title="4. Bi-box regression for pedestrian detection and occlusion estimation 2018"></a><a href="http://openaccess.thecvf.com/content_ECCV_2018/papers/CHUNLUAN_ZHOU_Bi-box_Regression_for_ECCV_2018_paper.pdf" target="_blank" rel="noopener">4. Bi-box regression for pedestrian detection and occlusion estimation 2018</a></h4><ul>
+<li><p>利用一个网络：行人检测+遮挡估计（即并行两个分支，分别输出两个bbx，一个完整的行人框，另一个行人的可见部分框）</p>
+<p><img src="/images/Bi-box.png" style="zoom:55%"></p>
+</li>
+<li><p>网络结构图</p>
+<p><img src="/images/network.png" style="zoom:55%"></p>
+</li>
+<li><p><strong>整体估计分支</strong>处理流程与通用目标检测一致</p>
+</li>
+<li><p><strong>可见部分估计分支</strong></p>
+<ul>
+<li><p>正样本条件：proposal不仅要和整个标注框的重叠程度大于一定阈值；还要和标注框内行人可见部分重叠程度大于一定阈值。（蓝色框满足前者条件，但是不满足后者条件，所以不作为正样本）</p>
+<p><img src="/images/label.png" style="zoom:25%"></p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="5-Occluded-Pedestrian-Detection-Through-Guided-Attention-in-CNNs-2018"><a href="#5-Occluded-Pedestrian-Detection-Through-Guided-Attention-in-CNNs-2018" class="headerlink" title="5. Occluded Pedestrian Detection Through Guided Attention in CNNs 2018"></a><a href="http://openaccess.thecvf.com/content_cvpr_2018/papers/Zhang_Occluded_Pedestrian_Detection_CVPR_2018_paper.pdf" target="_blank" rel="noopener">5. Occluded Pedestrian Detection Through Guided Attention in CNNs 2018</a></h4><ul>
+<li>正常的FasterRCNN结构+attention网络</li>
+<li>attetion network<ul>
+<li>Self Attention Net：channel-wise attention（SE block）</li>
+<li>Visible-box Attention Net：对人体可见部分建模（估计<strong>可见部分框</strong>）<ul>
+<li>提出一个occlusion pattern（类似内嵌小网络）：预测可见部分的4个类别（全部可见、上部可见、左侧可见、右侧可见）</li>
+</ul>
+</li>
+<li>Part Attention Net：<ul>
+<li>认为visible-box有时可能出现的不规律，不好分类到4个类别</li>
+<li>对visible-box的训练代价大</li>
+<li>使用body part detection作为额外的监督（head、shoulder、arm，etc）</li>
+<li>在行人检测数据集上，没有body part的标注；则选择采用<strong>预训练</strong>的part detection网络（在MPII Pose数据集上）；该网络提供14个人体关键点，不用再在行人检测数据集上finetuning，就可以有好的效果。</li>
+<li>使用 人体关键点检测网络 中的特征（具有较好的对人体特征的响应）来作为有效的特征表示来监督attention network</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/attention.png" style="zoom:75%"></p>
+<p><img src="/images/attention2.png" style="zoom:65%"></p>
+<h4 id="6-What-Can-Help-Pedestrian-Detection-2017"><a href="#6-What-Can-Help-Pedestrian-Detection-2017" class="headerlink" title="6. What Can Help Pedestrian Detection? 2017"></a>6. What Can Help Pedestrian Detection? 2017</h4><ul>
+<li>存在的问题：<ul>
+<li>行人与背景的辨识度小</li>
+<li>密集场景：人与人之间的边界模糊</li>
+</ul>
+</li>
+<li>解决：用额外的特征提升行人检测器的性能</li>
+<li>实验：<ul>
+<li>采用梯度、分割、热力信息</li>
+<li>时间序列</li>
+<li>深度通道</li>
+</ul>
+</li>
+<li>最后采用像素分割作为额外的特征监督；提取conv1_2/conv2_2/con3_3/conv4_3的特征图进行channel cocncat，再通过全卷积的结构，生成通道特征。再将通道特征concat到原body network上，输入RPN和FRCNN。</li>
+</ul>
+<p><img src="/images/hyperlearner.png" style="zoom:65%"></p>
+<p><img src="/images/body.png" style="zoom:45%"></p>
+<h4 id="7-Scale-aware-Fast-R-CNN-for-Pedestrian-Detection-2015"><a href="#7-Scale-aware-Fast-R-CNN-for-Pedestrian-Detection-2015" class="headerlink" title="7. Scale-aware Fast R-CNN for Pedestrian Detection 2015"></a><a href="https://arxiv.org/pdf/1510.08160.pdf" target="_blank" rel="noopener">7. Scale-aware Fast R-CNN for Pedestrian Detection 2015</a></h4><ul>
+<li>问题：行人尺度，根据距离远近，行人具有相差极大的size，且特征表示差异也极大</li>
+<li>解决：在一个网络中设计大、小网络，大网络针对大size的行人检测；小网络针对小size的行人检测；<ul>
+<li>使用scale-aware加权层作为门函数；该层根据proposal的高度（宽度随着行人姿态的变化很大）来判断行人的size。根据proposal的size来判定给大小网络分别赋予不同的权重。</li>
+<li>最终将大小网络的预测结果进行reweight，输出最终结果</li>
+</ul>
+</li>
+</ul>
+<p><img src="/images/SA-FRCNN.png" style="zoom:65%"></p>
+<h4 id="8-JointNet-2019"><a href="#8-JointNet-2019" class="headerlink" title="8. JointNet 2019"></a>8. JointNet 2019</h4><p>使用head和body同时来检测在crowd scene下的人体</p>
+<h5 id="Algorithm1："><a href="#Algorithm1：" class="headerlink" title="Algorithm1："></a>Algorithm1：</h5><p>$IoH=\frac{Area\ of\ Overlap}{Area\ of\ Head-box}$</p>
+<p>$H$为人头检测得到的集合（NMS之后），$B_1,B_2$为行人检测得到的集合（NMS之前后之后的）</p>
+<ul>
+<li><p>寻找不能匹配的head，加入到$H_m$中</p>
+<ul>
+<li>对每个head，遍历所有body（这里的body遍历的是<u>NMS之后</u>的body），如果他们的$IoH&gt; \lambda$，就把他们这个配对的score加入到集合中；最后从这个集合选取最大的score值如果$&lt;\beta$，就说明是未被匹配的head</li>
+</ul>
+</li>
+<li><p>不能匹配的head有两种情况：（1）本应该与该head匹配的body由于occlusion被NMS抑制；（2）这个head本身就是一个false positive(虚警)</p>
+</li>
+<li><p>当按以上的方法得到$H_m$之后，再使用一遍后处理方法，根据score小于low_thresh或大于high_thresh，删除或增加这个head与其对应的body</p>
+</li>
+<li><p>得到不能匹配的head（$H_m$），根据其和body的overlap值，如果大于high_thresh，说明是和当前已有的body框有较大overlap，但是它又是未匹配的head，所以大概率是本应该与其匹配的body由于occlusion被NMS抑制，这种head应该add它的body（这里的body遍历的是<u>NMS之前</u>的body）；而如果overlap小于low_thresh，说明确实是一个false psitive，应该delete</p>
+</li>
+</ul>
+
+  </div>
+  <div class="post-footer">
+    
+      <ul class="post-tag-list"><li class="post-tag-list-item"><a class="post-tag-list-link" href="/tags/行人检测/">行人检测</a></li></ul>
+    
+
+    <a href="#top" class="top">Back to Top</a>
+  </div>
+</article>
+<footer>
+  &copy; 2021
+  <span class="author">
+    Kai Zheng
+  </span>
+</footer>
+    </div>
+  </body>
+</html>
